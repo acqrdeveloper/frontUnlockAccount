@@ -1,8 +1,12 @@
 <template>
     <section>
         <div id="app">
-            <div class="container mb-5 pb-5">
-                <router-view/>
+            <div class="col-12">
+                <div class="col-12">
+                    <div class="container-fluid mb-5 pb-5">
+                        <router-view/>
+                    </div>
+                </div>
             </div>
         </div>
         <footer class="sticky-footer w-100 mt-5" style="background-color: transparent !important;">
