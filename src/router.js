@@ -5,6 +5,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Search from './components/Search';
 import SelectAction from './components/SelectAction';
+import "bootstrap";
 
 Vue.use(Router);
 
