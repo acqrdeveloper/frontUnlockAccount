@@ -111,8 +111,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="text-right">
-                                    <router-link class="btn btn-primary" :to="'/search'"><i
-                                            class="fa fa-close fa-fw"></i>Close
+                                    <router-link class="btn btn-primary" :to="'/search'"><i class="fa fa-close fa-fw"></i>Close
                                     </router-link>
                                 </div>
                             </div>
