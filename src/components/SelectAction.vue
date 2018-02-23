@@ -7,6 +7,7 @@
                 </div>
             </div>
             <div class="card-body">
+                <!--Alertas-->
                 <div class="row">
                     <div class="col-12">
                         <div v-if="showAlertUnlockSuccess === true" class="alert alert-success">
@@ -24,6 +25,7 @@
                         </div>
                     </div>
                 </div>
+                <!--Informacion inicial-->
                 <div class="row">
                     <div class="col-4">
                         <div class="img-thumbnail text-center">
@@ -32,20 +34,32 @@
                         </div>
                     </div>
                     <div class="col-8">
+                        <!--Informacion del usuario-->
                         <table class="table">
                             <tr>
-                                <th width="25%">Nombres Completos</th>
-                                <td width="75%">Alex Christian Quispe Roque</td>
+                                <th width="30%">Nombres Completos</th>
+                                <td width="50%">{{data.name_complet}}</td>
+                                <td width="30%"></td>
+                                <td width="50%"></td>
+                            </tr>
+                            <tr>
+                                <th>Dni</th>
+                                <td>{{data.dni}}</td>
+                                <th>Telefono</th>
+                                <td>{{data.phone}}</td>
                             </tr>
                             <tr>
                                 <th>Cargo</th>
-                                <td>Analista Programador</td>
+                                <td>{{data.position}}</td>
+                                <th>Fecha</th>
+                                <td>{{data.date_contract}}</td>
                             </tr>
-                            <tr>
-                                <th>Fecha Contrato</th>
-                                <td>2018/01/02</td>
-                            </tr>
+                            <!--<tr>-->
+                                <!--<th>Fecha Contrato</th>-->
+                                <!--<td>{{data.date_contract}}</td>-->
+                            <!--</tr>-->
                         </table>
+                        <!--Acciones del negocio-->
                         <div v-if="showReset === undefined && showResetAccept === undefined && showResetPwd === undefined " class="row">
                             <div class="col-6">
                                 <button v-if="showAlertUnlockSuccess === undefined||true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
@@ -66,7 +80,8 @@
                         </div>
                     </div>
                 </div>
-                <br v-if="showReset === true || showResetAccept === true || showResetPwd === true ">
+                <br v-if="showReset === true || showResetAccept === true || showResetPwd === true">
+                <!--Vista pasos para el reseteo-->
                 <div class="row" v-if="showReset === true">
                     <div class="col-12">
                         <div class="alert alert-secondary">
@@ -87,11 +102,12 @@
                         </div>
                     </div>
                 </div>
+                <!--Vista enviar codigo de seguridad-->
                 <div class="row" v-if="showResetAccept === true">
                     <div class="col-12">
                         <div class="alert alert-secondary">
                             <h5>Atencion</h5>
-                            <span>Ingrese el codigo de 6 digitos que hemos enviado al numero movil <b>9*******73</b>.</span><a title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link" href=""><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
+                            <span>Ingrese el codigo de 6 digitos que hemos enviado al numero movil <b>9*******73</b>.</span><a title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link" href="" @click="reset()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
                         </div>
                         <div class="row">
                             <div class="col-8">
@@ -103,18 +119,18 @@
                                 <template v-if="inputSecurity.charAt(5) === '' ">
                                     <button disabled class="btn btn-success btn-block">
                                         <i class="fa fa-check fa-fw"></i>
-                                        <span>Yes</span>
+                                        <span>Si</span>
                                     </button>
                                 </template>
                                 <template v-else>
-                                    <button class="btn btn-success btn-block" @click="btnYesReset()">
+                                    <button class="btn btn-success btn-block" @click="btnYesSecutity()">
                                         <i class="fa fa-check fa-fw"></i>
-                                        <span>Yes</span>
+                                        <span>Si</span>
                                     </button>
                                 </template>
                             </div>
                             <div class="col-2">
-                                <button class="btn btn-danger btn-block" @click="btnNotReset()">
+                                <button class="btn btn-danger btn-block" @click="btnNotSecutity()">
                                     <i class="fa fa-close fa-fw"></i>
                                     <span>No</span>
                                 </button>
@@ -122,6 +138,7 @@
                         </div>
                     </div>
                 </div>
+                <!--Vista reseteo de contraseña-->
                 <div class="row" v-if="showResetPwd === true">
                     <div class="col-12">
                         <div class="alert alert-secondary">
@@ -172,18 +189,21 @@
                                 </div>
                             </div>
                             <div class="col-3">
-                                <router-link class="btn btn-primary btn-block" :to="'/search'">
+                                <button class="btn btn-primary btn-block" @click="exit()">
                                     <i class="fa fa-sign-out fa-fw"></i>
                                     <span>Salir</span>
-                                </router-link>
+                                </button>
+                                <!--<router-link class="btn btn-primary btn-block" :to="'/search'">-->
+                                    <!--<i class="fa fa-sign-out fa-fw"></i>-->
+                                    <!--<span>Salir</span>-->
+                                <!--</router-link>-->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--<template v-if="showLoadingModal" >-->
-            <div v-if="showLoadingModal" class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
+        <div v-if="showLoadingModal" class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
                 <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-body">
@@ -199,12 +219,13 @@
                     </div>
                 </div>
             </div>
-        <!--</template>-->
     </section>
 </template>
 
 <script>
     import $ from 'jquery';
+    import Storage from 'vue-local-storage'
+    import SERVICE from "../services/ApiService";
 
     export default {
         name: "select-action",
@@ -222,21 +243,37 @@
             password_confirm:"",
             params:{
                 password:""
-            }
+            },
+            data:[],
         }),
         created() {
+            this.load();
         },
         methods: {
+            exit(){
+                SERVICE.dispatch("exit",{self:this});
+            },
+            //Funcion que carga la informacion
+            load(){
+                this.openLoadModal();
+                setTimeout(() => {
+                    this.data = Storage.get("data_user");
+                    this.closeLoadModal();
+                }, 2000)
+            },
+            //Funcion que muestra la carga por modal
             openLoadModal(){
                 this.showLoadingModal = true;
                 $(document).ready(() => {
                     $('#exampleModalCenter').modal({show: true, backdrop: 'static', keyboard: false});
                 });
             },
+            //Funcion que oculta la carga por modal
             closeLoadModal(){
                 $('#exampleModalCenter').modal('hide');
                 this.showLoadingModal = false;
             },
+            //Funcion que envia por POST el desbloqueo de la cuenta
             unlock() {
                 this.showAlertUnlockSuccess = undefined;
                 this.showAlertResetSuccess = undefined;
@@ -247,29 +284,37 @@
                     this.showAlertUnlockSuccess = true;
                 }, 2000)
             },
+            //Funcion que simula un error
             unlockdbl() {
                 this.dataClicked.push(this);
                 if (this.dataClicked.length >= 3) this.showUnlockOption = true;
                 this.showAlertUnlockSuccess = false;
             },
+            //Funcion que muestra la informacion de pasos para resetear una contraseña
             reset() {
                 //cerrar alertas activas
                 this.showAlertUnlockSuccess = undefined;
+                this.showUnlockOption = false;
+                this.dataClicked = [];
+                this.showReset = true;
+            },
+            //funcion que acepta obtener el codigo de seguridad por mensaje
+            btnYes() {
                 //ejecutar con modal carga
                 this.openLoadModal();
                 setTimeout(() => {
                     this.closeLoadModal();
-                    this.showUnlockOption = false;
-                    this.dataClicked = [];
-                    this.showReset = true;
+                    this.showReset = undefined;
+                    this.showResetAccept = true;
+                    this.inputSecurity = "";
                 }, 2000)
             },
-            btnYes() {
-                this.showReset = undefined;
-                this.showResetAccept = true;
-                this.inputSecurity = "";
+            //Funcion que cancela el envio del codigo de seguridad
+            btnNot(){
+                this.btnNotSecutity();
             },
-            btnYesReset() {
+            //Funcion que envia por POST el codigo de seguridad
+            btnYesSecutity() {
                 //ejecutar con modal carga
                 this.openLoadModal();
                 setTimeout(() => {
@@ -279,14 +324,12 @@
                     this.showResetPwd = true;
                 }, 2000)
             },
-            btnNot() {
+            //Funcion que cancela enviar por POST el codigo de seguridad
+            btnNotSecutity() {
                 this.showReset = undefined;
                 this.showResetAccept = undefined;
             },
-            btnNotReset() {
-                this.showReset = undefined;
-                this.showResetAccept = undefined;
-            },
+            //Funcion que envia por POST las contraseña nueva confirmada
             resetPwd(){
                 //ejecutar con modal carga
                 this.openLoadModal();
@@ -299,6 +342,7 @@
                     this.showAlertResetSuccess = true;
                 }, 2000)
             },
+            //Funcion que confirma la validacion de contraseñas
             validateConfirmPwd() {
                 return (this.params.password !== "" && this.password_confirm !== "") ? (this.params.password === this.password_confirm) ? false : true : true
             }
