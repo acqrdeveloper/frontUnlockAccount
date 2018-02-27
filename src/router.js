@@ -12,9 +12,9 @@ Vue.use(Router);
 const router = new Router({
     mode: 'history',
     routes: [
-        {path:"*",redirect:'/search'},
-        {path:'/search',name:'search',component:Search},
-        {path:'/select-action',name:'select-action',component:SelectAction,meta: {requiresAuth: true}},
+        {path:"*",redirect:'/'},
+        {path:'/',name:'search',component:Search},
+        {path:'/action',name:'select-action',component:SelectAction,meta: {requiresAuth: true}},
     ]
 });
 

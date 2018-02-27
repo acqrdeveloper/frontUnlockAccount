@@ -24,7 +24,7 @@ const SERVICE = new Vuex.Store({
                         self.closeLoadModal();
                         self.dataAlert = {};
                         Storage.set("data_user", r.data);
-                        self.$router.replace("/select-action");
+                        self.$router.replace("/action");
                     }
                 })
                 .catch((e) => {
@@ -56,7 +56,7 @@ const SERVICE = new Vuex.Store({
         exit({commit}, {self}) {
             Storage.remove("data_user");
             console.log("storage removed successfully!");
-            self.$router.replace("/search");
+            self.$router.replace("/");
         },
         unlock({commit}, {self}) {
             Axios.get(ENV.API + "/unlockresetuser/unlock/" + self.params.username)

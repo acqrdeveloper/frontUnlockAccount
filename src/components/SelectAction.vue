@@ -65,19 +65,10 @@
                         <!--Acciones del negocio-->
                         <div v-if="showReset === undefined && showResetAccept === undefined && showResetPwd === undefined " class="row">
                             <div class="col-6">
-                                <template v-if="data.countLocked === '0' ">
-                                <!--<p>{{data.countLocked === '0'}}</p>-->
-                                    <button type="button" :disabled="data.countLocked === '0' " v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block">
-                                        <i class="fa fa-unlock fa-fw"></i>
-                                        <span>Desbloquear Cuenta</span>
-                                    </button>
-                                </template>
-                                <template v-if="data.countLocked > 0 ">
-                                    <button :disabled="data.countLocked === 0 " v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
-                                        <i class="fa fa-unlock fa-fw"></i>
-                                        <span>Desbloquear Cuenta</span>
-                                    </button>
-                                </template>
+                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
+                                    <i class="fa fa-unlock fa-fw"></i>
+                                    <span>Desbloquear Cuenta</span>
+                                </button>
                                 <button v-if="showAlertUnlockSuccess === false" class="btn btn-outline-dark btn-block" @click="unlock()">
                                     <i class="fa fa-refresh fa-fw"></i>
                                     <span>Intentar Nuevamente</span>
