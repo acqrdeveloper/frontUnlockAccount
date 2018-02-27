@@ -1,30 +1,28 @@
 <template>
     <section>
-        <div class="card mt-5">
-            <div class="card-header mt-auto mb-auto">
-                <div class="text-center">
-                    <span class="h2">Bienvenidos al portal de Autoatencion</span>
+        <div class="text-center mt-5">
+            <img class="img-thumbnail" style="background-color: transparent;border: 0;width: 180px" src="logo.svg" alt="">
+        </div>
+        <div class="col-6 offset-3">
+            <div class="card mt-5">
+                <div class="card-header mt-auto mb-auto">
+                    <my-title/>
                 </div>
-            </div>
-            <div class="card-body">
-                <div v-if="msg !== undefined" class="alert alert-danger">
-                    <h5>Error</h5>
-                    <span>{{msg}}</span>
-                </div>
-                <form @submit.prevent="search()">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <input v-model="params.text_search" placeholder="Dni, Phone, Username" title="ingrese su dni, celular, usuario" type="text" class="form-control form-control-lg" required>
+                <div class="card-body">
+                    <alert-notify :data-alert="dataAlert"/>
+                    <form @submit.prevent="search()">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-9">
+                                <input ref="input_search" v-model="params.text_search" placeholder="Dni, Phone, Username" title="ingrese su dni, celular, usuario" type="text" class="form-control" required/>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <button type="submit" class="btn btn-primary btn-block"><i
+                                        class="fa fa-search fa-fw"></i>Buscar
+                                </button>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block">Buscar</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -32,20 +30,26 @@
 
 <script>
     import SERVICE from "../services/ApiService";
+    import MyTitle from "../components/MyTitle";
+    import AlertNotify from "../components/AlertNotify";
+
     export default {
+        components: {AlertNotify, MyTitle},
         name: "search",
-        data:()=>({
-            msg:undefined,
-           params:{
-               text_search:""
-           }
+        data: () => ({
+            msg: undefined,
+            params: {
+                text_search: ""
+            },
+            dataAlert:{}
         }),
-        methods:{
-            search(){
-                SERVICE.dispatch("search",{self:this});
+        methods: {
+            search() {
+                SERVICE.dispatch("searchText", {self: this});
             }
         }
     }
+
 </script>
 
 <style scoped>

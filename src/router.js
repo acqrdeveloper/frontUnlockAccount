@@ -5,14 +5,33 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Search from './components/Search';
 import SelectAction from './components/SelectAction';
-import "bootstrap";
+import Storage from 'vue-local-storage';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     routes: [
+        {path:"*",redirect:'/search'},
         {path:'/search',name:'search',component:Search},
-        {path:'/select-action',name:'select-action',component:SelectAction},
+        {path:'/select-action',name:'select-action',component:SelectAction,meta: {requiresAuth: true}},
     ]
 });
+
+router.beforeEach((to, from, next) => {
+
+    if(to.path == '/search'){
+        Storage.remove("data_user");
+        console.log("Storage removed!");
+    }
+
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    if (requiresAuth && Storage.get("data_user") == undefined) {
+        next('/search');
+    } else {
+        next();
+    }
+
+});
+
+export default router;

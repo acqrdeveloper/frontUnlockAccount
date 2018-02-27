@@ -6,10 +6,23 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="shortcut icon" href="<%= webpackConfig.output.publicPath %>favicon.ico">
     <script src="https://use.fontawesome.com/03309e79c4.js"></script>
+    <script src="cosapidata_login.min.js"></script>
+    <style>
+      .bg-img{
+        background: url("background/background_01.jpg");
+      }
+    </style>
     <title>App</title>
   </head>
-  <body>
+  <body class="bg-img">
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+        $(document).ready(($)=>{
+            $.backstretch([
+                "background/background_01.jpg",
+            ], {duration: 3000, fade: 750});
+        });
+    </script>
   </body>
 </html>

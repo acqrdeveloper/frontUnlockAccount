@@ -2,26 +2,33 @@
     <section>
         <div class="card mt-5">
             <div class="card-header mt-auto mb-auto">
-                <div class="text-center">
-                    <span class="h2">Bienvenidos al portal de Autoatencion</span>
-                </div>
+                <my-title/>
             </div>
             <div class="card-body">
                 <!--Alertas-->
                 <div class="row">
                     <div class="col-12">
+                        <alert-notify :data-alert="dataAlert"/>
                         <div v-if="showAlertUnlockSuccess === true" class="alert alert-success">
                             <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
-                            <span>Estimado se ha procedido a desbloquear su cuenta de red con exito.</span>
+                            <span>Estimado <b>{{data.name_complet}}</b>, su cuenta ha sido desbloqueada con éxito.</span>
                         </div>
                         <div v-if="showAlertUnlockSuccess === false" class="alert alert-warning">
                             <h5><i class="fa fa-exclamation-triangle fa-fw"></i>Error</h5>
-                            <span>Estimado lo sentimos hemos tenido un problema. Para proceder a desbloquear su cuenta de red intentelo nuevamente.</span><br>
+                            <span>Estimado <b>{{data.name_complet}}</b>, lo sentimos hemos tenido un problema. Para proceder a desbloquear su cuenta de red intentelo nuevamente.</span><br>
                             <h5 v-if="showUnlockOption" class="text-dark small">Si el problema persiste, comunicate al 215-5400 opcion #3.</h5>
                         </div>
                         <div v-if="showAlertResetSuccess === true" class="alert alert-success">
                             <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
-                            <span>Estimado su password se reseteó con exito.</span>
+                            <span>Estimado <b>{{data.name_complet}}</b>, su contraseña ha sido cambiada con éxito.</span>
+                        </div>
+                        <div v-if="showAlertResetSuccess === false" class="alert alert-warning">
+                            <h5><i class="fa fa-exclamation-triangle fa-fw"></i>Error</h5>
+                            <ul>
+                                <li>Debe contener una letra en mayusculas.</li>
+                                <li>Debe contener al menos un numero.</li>
+                                <li>Ambas contraseñas deben coincidir para habilitar el boton reset.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -35,34 +42,30 @@
                     </div>
                     <div class="col-8">
                         <!--Informacion del usuario-->
+                        <table class="table mb-0">
+                            <tr>
+                                <th width="25%">Nombres Completos</th>
+                                <td width="75%">{{data.name_complet == undefined ? 'load...' : data.name_complet}}</td>
+                            </tr>
+                        </table>
                         <table class="table">
                             <tr>
-                                <th width="30%">Nombres Completos</th>
-                                <td width="50%">{{data.name_complet}}</td>
-                                <td width="30%"></td>
-                                <td width="50%"></td>
+                                <th>Tiempo Bloq</th>
+                                <td>{{data.lockoutTime == undefined ? 'load...' : data.lockoutTime}}</td>
+                                <th>Cantidad Bloqs</th>
+                                <td>{{data.countLocked == undefined ? 'load...' : data.countLocked}}</td>
                             </tr>
                             <tr>
-                                <th>Dni</th>
-                                <td>{{data.dni}}</td>
-                                <th>Telefono</th>
-                                <td>{{data.phone}}</td>
+                                <th>Area</th>
+                                <td>{{data.area_work == undefined ? 'load...' : data.area_work}}</td>
+                                <th>Ultima Sesion</th>
+                                <td>{{data.lastLogon == undefined ? 'load...' : data.lastLogon}}</td>
                             </tr>
-                            <tr>
-                                <th>Cargo</th>
-                                <td>{{data.position}}</td>
-                                <th>Fecha</th>
-                                <td>{{data.date_contract}}</td>
-                            </tr>
-                            <!--<tr>-->
-                                <!--<th>Fecha Contrato</th>-->
-                                <!--<td>{{data.date_contract}}</td>-->
-                            <!--</tr>-->
                         </table>
                         <!--Acciones del negocio-->
                         <div v-if="showReset === undefined && showResetAccept === undefined && showResetPwd === undefined " class="row">
                             <div class="col-6">
-                                <button v-if="showAlertUnlockSuccess === undefined||true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
+                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
                                     <i class="fa fa-unlock fa-fw"></i>
                                     <span>Desbloquear Cuenta</span>
                                 </button>
@@ -107,7 +110,7 @@
                     <div class="col-12">
                         <div class="alert alert-secondary">
                             <h5>Atencion</h5>
-                            <span>Ingrese el codigo de 6 digitos que hemos enviado al numero movil <b>9*******73</b>.</span><a title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link" href="" @click="reset()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
+                            <span>Ingrese el codigo de 6 digitos que hemos enviado al numero movil <b>9*******73</b>.</span><a title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link" href @click.prevent="reSend()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
                         </div>
                         <div class="row">
                             <div class="col-8">
@@ -146,20 +149,20 @@
                             <ul>
                                 <li>Debe contener una letra en mayusculas.</li>
                                 <li>Debe contener al menos un numero.</li>
-                                <li>Ambas contraseñas deben coincidir para habilitar el boton.</li>
+                                <li>Ambas contraseñas deben coincidir para habilitar el boton reset.</li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-5">
                         <label>Nueva Contraseña</label>
                         <div class="form-group">
-                            <input v-model="params.password" type="password" class="form-control" @keyup="validateConfirmPwd()"/>
+                            <input v-model="params.password" type="password" class="form-control" @keyup="validateConfirmPwd()" placeholder="contraseña"/>
                         </div>
                     </div>
                     <div class="col-5">
                         <label>Confirmar Contraseña</label>
                         <div class="form-group">
-                            <input v-model="password_confirm" type="password" class="form-control" @keyup="validateConfirmPwd()"/>
+                            <input v-model="password_confirm" type="password" class="form-control" @keyup="validateConfirmPwd()" placeholder="confirmar contraseña"/>
                         </div>
                     </div>
                     <div class="col-2">
@@ -178,25 +181,23 @@
                     <div class="offset-6 col-6">
                         <div class="row">
                             <div class="col-9">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Dni, Username, Phone" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button">
-                                            <i class="fa fa-search fa-fw"></i>
-                                            <span>Buscar</span>
-                                        </button>
+                                <form @submit.prevent="search()">
+                                    <div class="input-group">
+                                        <input ref="input_search" type="text" v-model="params.text_search" class="form-control" placeholder="Dni, Username, Phone" aria-label="Recipient's username" aria-describedby="basic-addon2" required>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fa fa-search fa-fw"></i>
+                                                <span>Buscar</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                             <div class="col-3">
                                 <button class="btn btn-primary btn-block" @click="exit()">
                                     <i class="fa fa-sign-out fa-fw"></i>
                                     <span>Salir</span>
                                 </button>
-                                <!--<router-link class="btn btn-primary btn-block" :to="'/search'">-->
-                                    <!--<i class="fa fa-sign-out fa-fw"></i>-->
-                                    <!--<span>Salir</span>-->
-                                <!--</router-link>-->
                             </div>
                         </div>
                     </div>
@@ -226,8 +227,12 @@
     import $ from 'jquery';
     import Storage from 'vue-local-storage'
     import SERVICE from "../services/ApiService";
+    import MyTitle from "../components/MyTitle";
+    import AlertNotify from "../components/AlertNotify";
 
     export default {
+        components: {AlertNotify, MyTitle},
+
         name: "select-action",
         data: () => ({
             showAlertUnlockSuccess: undefined,
@@ -242,24 +247,40 @@
             showLoadingModal: false,
             password_confirm:"",
             params:{
-                password:""
+                password:"",
+                text_search:""
             },
             data:[],
+            dataAlert:{}
         }),
         created() {
             this.load();
         },
         methods: {
+            //Funcion para buscar texto
+            search(){
+                this.openLoadModal();
+                this.showAlertUnlockSuccess = undefined;
+                this.showAlertResetSuccess = undefined;
+                SERVICE.dispatch("searchText",{self:this});
+                this.data = Storage.get("data_user");
+                if(Object.keys(this.data).length > 0){
+                    this.closeLoadModal();
+                    this.params.text_search = "";
+                    this.$refs.input_search.focus();
+                }
+            },
+            //Funcion para remover la cache y salir del modulo de autogestion
             exit(){
                 SERVICE.dispatch("exit",{self:this});
             },
             //Funcion que carga la informacion
             load(){
                 this.openLoadModal();
-                setTimeout(() => {
-                    this.data = Storage.get("data_user");
+                this.data = Storage.get("data_user");
+                if(Object.keys(this.data).length > 0){
                     this.closeLoadModal();
-                }, 2000)
+                }
             },
             //Funcion que muestra la carga por modal
             openLoadModal(){
@@ -293,6 +314,7 @@
             //Funcion que muestra la informacion de pasos para resetear una contraseña
             reset() {
                 //cerrar alertas activas
+                this.showAlertResetSuccess = undefined;
                 this.showAlertUnlockSuccess = undefined;
                 this.showUnlockOption = false;
                 this.dataClicked = [];
@@ -335,16 +357,29 @@
                 this.openLoadModal();
                 setTimeout(() => {
                     this.closeLoadModal();
-                    this.showReset = undefined ;
-                    this.showResetAccept = undefined ;
-                    this.showResetPwd = undefined;
-                    this.showAlertUnlockSuccess = undefined;
-                    this.showAlertResetSuccess = true;
+                    this.showAlertResetSuccess = false;
+                    if(this.showAlertResetSuccess){
+                        this.showReset = undefined;
+                        this.showResetAccept = undefined;
+                        this.showResetPwd = undefined;
+                        this.showAlertUnlockSuccess = undefined;
+                    }
                 }, 2000)
             },
             //Funcion que confirma la validacion de contraseñas
             validateConfirmPwd() {
                 return (this.params.password !== "" && this.password_confirm !== "") ? (this.params.password === this.password_confirm) ? false : true : true
+            },
+            //Funcion para reenviar codigo de seguridad
+            reSend(){
+                //ejecutar con modal carga
+                this.openLoadModal();
+                setTimeout(() => {
+                    this.closeLoadModal();
+                    this.showReset = undefined;
+                    this.showResetAccept = true;
+                    this.inputSecurity = "";
+                }, 5000)
             }
         }
     }
@@ -352,5 +387,7 @@
 </script>
 
 <style scoped>
-
+    .card-body{
+        background-color: transparent !important;
+    }
 </style>

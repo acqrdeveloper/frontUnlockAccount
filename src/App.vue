@@ -9,7 +9,7 @@
                 </div>
             </div>
         </div>
-        <footer class="sticky-footer w-100 mt-5" style="background-color: transparent !important;">
+        <footer class="sticky-footer w-100 mt-5" style="background-color: transparent !important;color:#f5f5f5; letter-spacing: 1px">
             <div class="container">
                 <div class="text-center">
                     <small>Copyright © Corporación Sapia {{(new Date).getFullYear()}}</small>
@@ -21,15 +21,10 @@
 
 <script>
 
-    import Search from './components/Search';
-    import SelectAction from "./components/SelectAction";
-
     export default {
-        components: {
-            SelectAction,
-            Search},
         name: 'app',
     }
+
 </script>
 
 <style>
@@ -51,6 +46,12 @@
         border-color: #003348 !important;
     }
     .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 49, 75, 0.5) !important;
+    }
+
+    .form-control:focus{
+        border-color: #00699b !important;
+        outline: 0;
         box-shadow: 0 0 0 0.2rem rgba(0, 49, 75, 0.5) !important;
     }
 </style>
