@@ -65,10 +65,19 @@
                         <!--Acciones del negocio-->
                         <div v-if="showReset === undefined && showResetAccept === undefined && showResetPwd === undefined " class="row">
                             <div class="col-6">
-                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
-                                    <i class="fa fa-unlock fa-fw"></i>
-                                    <span>Desbloquear Cuenta</span>
-                                </button>
+                                <template v-if="data.countLocked === '0' ">
+                                <!--<p>{{data.countLocked === '0'}}</p>-->
+                                    <button type="button" :disabled="data.countLocked === '0' " v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block">
+                                        <i class="fa fa-unlock fa-fw"></i>
+                                        <span>Desbloquear Cuenta</span>
+                                    </button>
+                                </template>
+                                <template v-if="data.countLocked > 0 ">
+                                    <button :disabled="data.countLocked === 0 " v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
+                                        <i class="fa fa-unlock fa-fw"></i>
+                                        <span>Desbloquear Cuenta</span>
+                                    </button>
+                                </template>
                                 <button v-if="showAlertUnlockSuccess === false" class="btn btn-outline-dark btn-block" @click="unlock()">
                                     <i class="fa fa-refresh fa-fw"></i>
                                     <span>Intentar Nuevamente</span>
@@ -247,6 +256,7 @@
             showLoadingModal: false,
             password_confirm:"",
             params:{
+                username :"",
                 password:"",
                 text_search:""
             },
@@ -260,15 +270,17 @@
             //Funcion para buscar texto
             search(){
                 this.openLoadModal();
-                this.showAlertUnlockSuccess = undefined;
-                this.showAlertResetSuccess = undefined;
-                SERVICE.dispatch("searchText",{self:this});
-                this.data = Storage.get("data_user");
-                if(Object.keys(this.data).length > 0){
-                    this.closeLoadModal();
-                    this.params.text_search = "";
-                    this.$refs.input_search.focus();
-                }
+                this.params.username = this.data.username;
+                // this.showAlertUnlockSuccess = undefined;
+                // this.showAlertResetSuccess = undefined;
+                SERVICE.dispatch("researchText",{self:this});
+                // this.data = Storage.get("data_user");
+                // this.data = Storage.get("data_user");
+                // if(Object.keys(this.data).length > 0){
+                //     this.closeLoadModal();
+                //     this.params.text_search = "";
+                //     this.$refs.input_search.focus();
+                // }
             },
             //Funcion para remover la cache y salir del modulo de autogestion
             exit(){
@@ -296,14 +308,17 @@
             },
             //Funcion que envia por POST el desbloqueo de la cuenta
             unlock() {
-                this.showAlertUnlockSuccess = undefined;
-                this.showAlertResetSuccess = undefined;
-                //ejecutar con modal carga
                 this.openLoadModal();
-                setTimeout(() => {
-                    this.closeLoadModal();
-                    this.showAlertUnlockSuccess = true;
-                }, 2000)
+                this.params.username = this.data.username;
+                SERVICE.dispatch("unlock",{self:this});
+
+                // this.showAlertUnlockSuccess = undefined;
+                // this.showAlertResetSuccess = undefined;
+                //ejecutar con modal carga
+                // setTimeout(() => {
+                //     this.closeLoadModal();
+                //     this.showAlertUnlockSuccess = true;
+                // }, 2000)
             },
             //Funcion que simula un error
             unlockdbl() {

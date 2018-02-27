@@ -21,12 +21,33 @@ const SERVICE = new Vuex.Store({
             Axios.get(ENV.API + "/unlockresetuser/search/" + self.params.text_search)
                 .then((r) => {
                     if (r.status === 200){
+                        self.closeLoadModal();
                         self.dataAlert = {};
                         Storage.set("data_user", r.data);
                         self.$router.replace("/select-action");
                     }
                 })
                 .catch((e) => {
+                    self.closeLoadModal();
+                    self.dataAlert = e.response;
+                    self.params.text_search = "";
+                    self.$refs.input_search.focus();
+                })
+        },
+        researchText({commit}, {self}) {
+            Axios.get(ENV.API + "/unlockresetuser/search/" + self.params.text_search)
+                .then((r) => {
+                    if (r.status === 200){
+                        self.closeLoadModal();
+                        self.dataAlert = {};
+                        Storage.set("data_user", r.data);
+                        self.data =  Storage.get("data_user");
+                        self.params.text_search = "";
+                        self.$refs.input_search.focus();
+                    }
+                })
+                .catch((e) => {
+                    self.closeLoadModal();
                     self.dataAlert = e.response;
                     self.params.text_search = "";
                     self.$refs.input_search.focus();
@@ -38,17 +59,33 @@ const SERVICE = new Vuex.Store({
             self.$router.replace("/search");
         },
         unlock({commit}, {self}) {
-            Axios.post(ENV.API + "/unlockresetuser/unlock", self.params)
+            Axios.get(ENV.API + "/unlockresetuser/unlock/" + self.params.username)
                 .then((r) => {
                     if (r.status === 200) {
-                        self.msg = undefined;
-                        Storage.set("data_user", r.data.data);
-                        self.$router.replace("/select-action");
+                        const rpta = r;
+                        Axios.get(ENV.API + "/unlockresetuser/search/" + self.params.username)
+                            .then((r) => {
+                                if (r.status === 200){
+                                    self.closeLoadModal();
+                                    self.dataAlert = rpta;
+                                    Storage.set("data_user", r.data);
+                                    self.data =  Storage.get("data_user");
+                                    self.params.text_search = "";
+                                    self.$refs.input_search.focus();
+                                }
+                            })
+                            .catch((e) => {
+                                self.closeLoadModal();
+                                self.dataAlert = e.response;
+                                self.params.text_search = "";
+                                self.$refs.input_search.focus();
+                            })
                     }
                 })
                 .catch((e) => {
+                    self.closeLoadModal();
+                    self.dataAlert = e.response;
                     console.error(e);
-                    self.msg = e.response.data.msg;
                 })
         }
     }

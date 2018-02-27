@@ -25,6 +25,23 @@
                 </div>
             </div>
         </div>
+
+        <div v-if="showLoadingModal" class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-muted text-center">
+                                    <i class="fa fa-circle-o-notch fa-spin fa-4x"></i>
+                                    <p class="mt-2 mb-0">Procesando Solicitud</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -41,12 +58,26 @@
             params: {
                 text_search: ""
             },
-            dataAlert:{}
+            dataAlert:{},
+            showLoadingModal: false,
         }),
         methods: {
             search() {
+                this.openLoadModal();
                 SERVICE.dispatch("searchText", {self: this});
-            }
+            },
+            //Funcion que muestra la carga por modal
+            openLoadModal(){
+                this.showLoadingModal = true;
+                $(document).ready(() => {
+                    $('#exampleModalCenter').modal({show: true, backdrop: 'static', keyboard: false});
+                });
+            },
+            //Funcion que oculta la carga por modal
+            closeLoadModal(){
+                $('#exampleModalCenter').modal('hide');
+                this.showLoadingModal = false;
+            },
         }
     }
 
