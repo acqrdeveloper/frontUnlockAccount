@@ -1,5 +1,5 @@
 <template>
-    <div v-if="Object.keys(dataAlert).length > 0">
+    <div>
         <template v-if="dataAlert.status === 200">
             <div  class="alert alert-success">
                 <h5><i class="fa fa-check fa-fw"></i>Bien</h5>

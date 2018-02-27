@@ -8,8 +8,8 @@
                 <!--Alertas-->
                 <div class="row">
                     <div class="col-12">
-                        <alert-notify :data-alert="dataAlert"/>
-                        <div v-if="showAlertUnlockSuccess === true" class="alert alert-success">
+                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert"/>
+                        <!--<div v-if="showAlertUnlockSuccess === true" class="alert alert-success">
                             <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
                             <span>Estimado <b>{{data.name_complet}}</b>, su cuenta ha sido desbloqueada con éxito.</span>
                         </div>
@@ -29,15 +29,14 @@
                                 <li>Debe contener al menos un numero.</li>
                                 <li>Ambas contraseñas deben coincidir para habilitar el boton reset.</li>
                             </ul>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <!--Informacion inicial-->
                 <div class="row">
                     <div class="col-4">
                         <div class="img-thumbnail text-center">
-                            <img src="http://www.moweble.com/console/wp-content/themes/MagMan/timthumb.php?src=http://www.moweble.com/console/wp-content/uploads/2015/08/marry.jpg&w=720&h=&zc=1&q=80"
-                                 alt="" width="260">
+                            <img src="http://www.moweble.com/console/wp-content/themes/MagMan/timthumb.php?src=http://www.moweble.com/console/wp-content/uploads/2015/08/marry.jpg&w=720&h=&zc=1&q=80" alt="" width="260" />
                         </div>
                     </div>
                     <div class="col-8">
@@ -63,7 +62,7 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="showReset === undefined && showResetAccept === undefined && showResetPwd === undefined " class="row">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false " class="row">
                             <div class="col-6">
                                 <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
                                     <i class="fa fa-unlock fa-fw"></i>
@@ -83,98 +82,12 @@
                         </div>
                     </div>
                 </div>
-                <br v-if="showReset === true || showResetAccept === true || showResetPwd === true">
                 <!--Vista pasos para el reseteo-->
-                <div class="row" v-if="showReset === true">
-                    <div class="col-12">
-                        <div class="alert alert-secondary">
-                            <h5>Advertencia</h5>
-                            <span>Para proceder a resetear su contraseña, como medida de seguridad, procederemos a enviar un sms al numero movil <b>9*******73</b>, que se encuentra en el Active Directory.</span>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <button class="btn btn-primary btn-block" @click="btnYes()">
-                                    <span>Si</span>
-                                </button>
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-primary btn-block" @click="btnNot()">
-                                    <span>No</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset" />
                 <!--Vista enviar codigo de seguridad-->
-                <div class="row" v-if="showResetAccept === true">
-                    <div class="col-12">
-                        <div class="alert alert-secondary">
-                            <h5>Atencion</h5>
-                            <span>Ingrese el codigo de 6 digitos que hemos enviado al numero movil <b>9*******73</b>.</span><a title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link" href @click.prevent="reSend()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
-                        </div>
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="form-group">
-                                    <input v-model="inputSecurity" type="text" class="form-control" placeholder="Ingrese su codigo de seguridad de 6 digitos" autofocus maxlength="6" />
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <template v-if="inputSecurity.charAt(5) === '' ">
-                                    <button disabled class="btn btn-success btn-block">
-                                        <i class="fa fa-check fa-fw"></i>
-                                        <span>Si</span>
-                                    </button>
-                                </template>
-                                <template v-else>
-                                    <button class="btn btn-success btn-block" @click="btnYesSecutity()">
-                                        <i class="fa fa-check fa-fw"></i>
-                                        <span>Si</span>
-                                    </button>
-                                </template>
-                            </div>
-                            <div class="col-2">
-                                <button class="btn btn-danger btn-block" @click="btnNotSecutity()">
-                                    <i class="fa fa-close fa-fw"></i>
-                                    <span>No</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset" />
                 <!--Vista reseteo de contraseña-->
-                <div class="row" v-if="showResetPwd === true">
-                    <div class="col-12">
-                        <div class="alert alert-secondary">
-                            <p>Para el reseteo, porfavor tome en cuenta lo siguiente:</p>
-                            <ul>
-                                <li>Debe contener una letra en mayusculas.</li>
-                                <li>Debe contener al menos un numero.</li>
-                                <li>Ambas contraseñas deben coincidir para habilitar el boton reset.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-5">
-                        <label>Nueva Contraseña</label>
-                        <div class="form-group">
-                            <input v-model="params.password" type="password" class="form-control" @keyup="validateConfirmPwd()" placeholder="contraseña"/>
-                        </div>
-                    </div>
-                    <div class="col-5">
-                        <label>Confirmar Contraseña</label>
-                        <div class="form-group">
-                            <input v-model="password_confirm" type="password" class="form-control" @keyup="validateConfirmPwd()" placeholder="confirmar contraseña"/>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <label class="text-white">.</label>
-                        <template v-if="validateConfirmPwd()">
-                            <button :disabled="validateConfirmPwd()" class="btn btn-success btn-block"><i class="fa fa-recycle fa-fw"></i>Reset</button>
-                        </template>
-                        <template v-else>
-                            <button :disabled="validateConfirmPwd()" class="btn btn-success btn-block" @click="resetPwd()"><i class="fa fa-recycle fa-fw"></i>Reset</button>
-                        </template>
-                    </div>
-                </div>
+                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset" @eventResetPwd="resetPwd()" />
             </div>
             <div class="card-footer">
                 <div class="row">
@@ -229,9 +142,12 @@
     import SERVICE from "../services/ApiService";
     import MyTitle from "../components/MyTitle";
     import AlertNotify from "../components/AlertNotify";
+    import InfoReset from "../components/InfoReset";
+    import AcceptReset from "../components/AcceptReset";
+    import PwdReset from "../components/PwdReset";
 
     export default {
-        components: {AlertNotify, MyTitle},
+        components: {AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset},
 
         name: "select-action",
         data: () => ({
@@ -252,12 +168,24 @@
                 text_search:""
             },
             data:[],
-            dataAlert:{}
+            dataAlert:{},
+            dataReset:{
+                showInfo:false,
+                showAccept:false,
+                showResetPwd:false,
+            }
         }),
         created() {
             this.load();
         },
         methods: {
+            //Funcion para resetear desde event
+            resetPwd(){
+              this.dataAlert = {status:200,data:"excelenteeeeee"};
+              this.dataReset.showResetPwd = false;
+              this.dataReset.showAccept = false;
+              this.dataReset.showInfo = false;
+            },
             //Funcion para buscar texto
             search(){
                 this.openLoadModal();
@@ -320,61 +248,8 @@
             //Funcion que muestra la informacion de pasos para resetear una contraseña
             reset() {
                 //cerrar alertas activas
-                this.showAlertResetSuccess = undefined;
-                this.showAlertUnlockSuccess = undefined;
-                this.showUnlockOption = false;
-                this.dataClicked = [];
-                this.showReset = true;
-            },
-            //funcion que acepta obtener el codigo de seguridad por mensaje
-            btnYes() {
-                //ejecutar con modal carga
-                this.openLoadModal();
-                setTimeout(() => {
-                    this.closeLoadModal();
-                    this.showReset = undefined;
-                    this.showResetAccept = true;
-                    this.inputSecurity = "";
-                }, 2000)
-            },
-            //Funcion que cancela el envio del codigo de seguridad
-            btnNot(){
-                this.btnNotSecutity();
-            },
-            //Funcion que envia por POST el codigo de seguridad
-            btnYesSecutity() {
-                //ejecutar con modal carga
-                this.openLoadModal();
-                setTimeout(() => {
-                    this.closeLoadModal();
-                    this.showReset = undefined ;
-                    this.showResetAccept = undefined ;
-                    this.showResetPwd = true;
-                }, 2000)
-            },
-            //Funcion que cancela enviar por POST el codigo de seguridad
-            btnNotSecutity() {
-                this.showReset = undefined;
-                this.showResetAccept = undefined;
-            },
-            //Funcion que envia por POST las contraseña nueva confirmada
-            resetPwd(){
-                //ejecutar con modal carga
-                this.openLoadModal();
-                setTimeout(() => {
-                    this.closeLoadModal();
-                    this.showAlertResetSuccess = false;
-                    if(this.showAlertResetSuccess){
-                        this.showReset = undefined;
-                        this.showResetAccept = undefined;
-                        this.showResetPwd = undefined;
-                        this.showAlertUnlockSuccess = undefined;
-                    }
-                }, 2000)
-            },
-            //Funcion que confirma la validacion de contraseñas
-            validateConfirmPwd() {
-                return (this.params.password !== "" && this.password_confirm !== "") ? (this.params.password === this.password_confirm) ? false : true : true
+                this.dataAlert = {};
+                this.dataReset.showInfo = true;
             },
             //Funcion para reenviar codigo de seguridad
             reSend(){
