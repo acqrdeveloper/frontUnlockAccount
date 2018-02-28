@@ -8,7 +8,7 @@
                 <!--Alertas-->
                 <div class="row">
                     <div class="col-12">
-                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert"/>
+                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
                         <!--<div v-if="showAlertUnlockSuccess === true" class="alert alert-success">
                             <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
                             <span>Estimado <b>{{data.name_complet}}</b>, su cuenta ha sido desbloqueada con éxito.</span>
@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="img-thumbnail text-center">
-                            <img src="http://www.moweble.com/console/wp-content/themes/MagMan/timthumb.php?src=http://www.moweble.com/console/wp-content/uploads/2015/08/marry.jpg&w=720&h=&zc=1&q=80" alt="" width="260" />
+                            <img src="http://www.moweble.com/console/wp-content/themes/MagMan/timthumb.php?src=http://www.moweble.com/console/wp-content/uploads/2015/08/marry.jpg&w=720&h=&zc=1&q=80" alt="" width="260"/>
                         </div>
                     </div>
                     <div class="col-8">
@@ -62,13 +62,17 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false " class="row">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false "
+                             class="row">
                             <div class="col-6">
-                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
+                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false"
+                                        class="btn btn-outline-success btn-block" @click="unlock()"
+                                        @dblclick="unlockdbl()">
                                     <i class="fa fa-unlock fa-fw"></i>
                                     <span>Desbloquear Cuenta</span>
                                 </button>
-                                <button v-if="showAlertUnlockSuccess === false" class="btn btn-outline-dark btn-block" @click="unlock()">
+                                <button v-if="showAlertUnlockSuccess === false" class="btn btn-outline-dark btn-block"
+                                        @click="unlock()">
                                     <i class="fa fa-refresh fa-fw"></i>
                                     <span>Intentar Nuevamente</span>
                                 </button>
@@ -83,11 +87,11 @@
                     </div>
                 </div>
                 <!--Vista pasos para el reseteo-->
-                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset" />
+                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset,arrayPhones"/>
                 <!--Vista enviar codigo de seguridad-->
-                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset" />
+                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset"/>
                 <!--Vista reseteo de contraseña-->
-                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset" @eventResetPwd="resetPwd()" />
+                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset" @eventResetPwd="resetPwd()"/>
             </div>
             <div class="card-footer">
                 <div class="row">
@@ -96,9 +100,11 @@
                             <div class="col-9">
                                 <form @submit.prevent="search()">
                                     <div class="input-group">
-                                        <input ref="input_search" type="text" v-model="params.text_search" class="form-control" placeholder="Dni, Username, Phone" aria-label="Recipient's username" aria-describedby="basic-addon2" required>
+                                        <input ref="input_search" type="text" v-model="params.text_search"
+                                               class="form-control" placeholder="Dni, Username, Phone"
+                                               aria-describedby="basic-addon2" required>
                                         <div class="input-group-append">
-                                            <button class="btn btn-primary" type="submit">
+                                            <button class="btn btn-primary btn-block" type="submit">
                                                 <i class="fa fa-search fa-fw"></i>
                                                 <span>Buscar</span>
                                             </button>
@@ -117,27 +123,11 @@
                 </div>
             </div>
         </div>
-        <div v-if="showLoadingModal" class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
-                <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="text-muted text-center">
-                                        <i class="fa fa-circle-o-notch fa-spin fa-4x"></i>
-                                        <p class="mt-2 mb-0">Procesando Solicitud</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <load-modal v-if="showLoadingModal"/>
     </section>
 </template>
 
 <script>
-    import $ from 'jquery';
     import Storage from 'vue-local-storage'
     import SERVICE from "../services/ApiService";
     import MyTitle from "../components/MyTitle";
@@ -145,91 +135,84 @@
     import InfoReset from "../components/InfoReset";
     import AcceptReset from "../components/AcceptReset";
     import PwdReset from "../components/PwdReset";
+    import LoadModal from "../components/LoadModal";
+    import Util from '../Util';
 
     export default {
-        components: {AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset},
-
+        components: {AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
         name: "select-action",
         data: () => ({
             showAlertUnlockSuccess: undefined,
             showAlertResetSuccess: undefined,
             showReset: undefined,
             showResetAccept: undefined,
-            showResetPwd:undefined,
+            showResetPwd: undefined,
             showUnlockOption: false,
             countClicked: 0,
             dataClicked: [],
             inputSecurity: "",
             showLoadingModal: false,
-            password_confirm:"",
-            params:{
-                username :"",
-                password:"",
-                text_search:""
+            password_confirm: "",
+            params: {
+                username: "",
+                password: "",
+                text_search: ""
             },
-            data:[],
-            dataAlert:{},
-            dataReset:{
-                showInfo:false,
-                showAccept:false,
-                showResetPwd:false,
-            }
+            data: [],
+            dataAlert: {},
+            dataReset: {
+                showInfo: false,
+                showAccept: false,
+                showResetPwd: false,
+            },
+            arrayPhones:[],
         }),
         created() {
             this.load();
         },
         methods: {
             //Funcion para resetear desde event
-            resetPwd(){
-              this.dataAlert = {status:200,data:"excelenteeeeee"};
-              this.dataReset.showResetPwd = false;
-              this.dataReset.showAccept = false;
-              this.dataReset.showInfo = false;
+            resetPwd() {
+                this.dataAlert = {status: 200, data: "excelenteeeeee"};
+                this.dataReset.showResetPwd = false;
+                this.dataReset.showAccept = false;
+                this.dataReset.showInfo = false;
             },
             //Funcion para buscar texto
-            search(){
+            search() {
+                //Ocultar elementos activos
+                this.dataReset.showInfo = false;
+                this.dataReset.showAccept = false;
+                this.dataReset.showResetPwd = false;
                 this.openLoadModal();
                 this.params.username = this.data.username;
-                // this.showAlertUnlockSuccess = undefined;
-                // this.showAlertResetSuccess = undefined;
-                SERVICE.dispatch("researchText",{self:this});
-                // this.data = Storage.get("data_user");
-                // this.data = Storage.get("data_user");
-                // if(Object.keys(this.data).length > 0){
-                //     this.closeLoadModal();
-                //     this.params.text_search = "";
-                //     this.$refs.input_search.focus();
-                // }
+                SERVICE.dispatch("researchText", {self: this});
             },
             //Funcion para remover la cache y salir del modulo de autogestion
-            exit(){
-                SERVICE.dispatch("exit",{self:this});
+            exit() {
+                SERVICE.dispatch("exit", {self: this});
             },
             //Funcion que carga la informacion
-            load(){
+            load() {
                 this.openLoadModal();
                 this.data = Storage.get("data_user");
-                if(Object.keys(this.data).length > 0){
+                if (Object.keys(this.data).length > 0) {
                     this.closeLoadModal();
                 }
             },
             //Funcion que muestra la carga por modal
-            openLoadModal(){
-                this.showLoadingModal = true;
-                $(document).ready(() => {
-                    $('#exampleModalCenter').modal({show: true, backdrop: 'static', keyboard: false});
-                });
+            openLoadModal() {
+                Util.openLoadModal(this);
             },
             //Funcion que oculta la carga por modal
-            closeLoadModal(){
-                $('#exampleModalCenter').modal('hide');
-                this.showLoadingModal = false;
+            closeLoadModal() {
+                Util.closeLoadModal(this);
             },
             //Funcion que envia por POST el desbloqueo de la cuenta
             unlock() {
                 this.openLoadModal();
                 this.params.username = this.data.username;
-                SERVICE.dispatch("unlock",{self:this});
+                SERVICE.dispatch("unlock", {self: this});
 
                 // this.showAlertUnlockSuccess = undefined;
                 // this.showAlertResetSuccess = undefined;
@@ -247,12 +230,10 @@
             },
             //Funcion que muestra la informacion de pasos para resetear una contraseña
             reset() {
-                //cerrar alertas activas
-                this.dataAlert = {};
-                this.dataReset.showInfo = true;
+                this.validatePhone()
             },
             //Funcion para reenviar codigo de seguridad
-            reSend(){
+            reSend() {
                 //ejecutar con modal carga
                 this.openLoadModal();
                 setTimeout(() => {
@@ -261,6 +242,21 @@
                     this.showResetAccept = true;
                     this.inputSecurity = "";
                 }, 5000)
+            },
+            //Funcion valida si tiene telefono en el AD para tomar una accion
+            validatePhone() {
+                if (Storage.get("data_user").phone_number !== undefined) {
+                    this.arrayPhones = ["9******93","9******32","9******54"];
+                    // this.arrayPhones = ["997397243"];
+                    // let arrPhone = Storage.get("data_user").phone_number;
+                        this.dataAlert = {};
+                        this.dataReset.showInfo = true;
+                } else {
+                    this.dataAlert = {
+                        status: 412,
+                        data: "Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 405-7877."
+                    };
+                }
             }
         }
     }
@@ -268,7 +264,7 @@
 </script>
 
 <style scoped>
-    .card-body{
+    .card-body {
         background-color: transparent !important;
     }
 </style>

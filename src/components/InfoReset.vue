@@ -4,12 +4,33 @@
                 <div class="alert alert-secondary">
                     <h5>Advertencia</h5>
                     <span>Para proceder a resetear su contraseña, como medida de seguridad, procederemos a enviar un sms al numero movil <b>9*******73</b>, que se encuentra en el Active Directory.</span>
+                    <div v-if="arrayPhones.length >= 2" class="mt-2">
+                        <span class="ml-3">Por favor seleccione el numero movil, en el que desea recibir el codigo de seguridad:</span>
+                        <div class="ml-3" v-for="opt in arrayPhones">
+                            <div class="form-check">
+                                <input v-model="phone_number_checked" title type="radio" class="form-check-input" :id="'opt'+opt" name="opt_number" :value="opt" />
+                                <label class="form-check-label" :for="'opt'+opt">{{opt}}</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <button class="btn btn-primary btn-block" @click="btnYes()">
-                            <span>Si</span>
-                        </button>
+                        <template v-if="arrayPhones.length >= 2">
+                            <!--<p>{{phone_number_checked.target.value}}</p>-->
+                            <!--<button :disabled="opt === phone_number_checked.target.value" class="btn btn-primary btn-block" @click="btnYes()">-->
+                                <!--<span>Si</span>-->
+                            <!--</button>-->
+                            <button class="btn btn-primary btn-block" @click="btnYes()">
+                                <span>Si</span>
+                            </button>+
+                        </template>
+                        <template v-if="arrayPhones.length === 1">
+                            <button class="btn btn-primary btn-block" @click="btnYes()">
+                                <span>Si</span>
+                            </button>
+                        </template>
+
                     </div>
                     <div class="col-6">
                         <button class="btn btn-primary btn-block" @click="btnNot()">
@@ -25,7 +46,15 @@
     export default {
         name: "info-reset",
         props: {
-            dataReset:{}
+            dataReset:{},
+            arrayPhones:[]
+        },
+        data:()=>({
+            phone_number_checked:""
+        }),
+        created(){
+          // this.$refs.optnumber.attr("checked");
+          console.log(this.$refs.phone_number_checked);
         },
         methods:{
             //Funcion que cancela el envio del codigo de seguridad

@@ -9,7 +9,7 @@
                     <my-title/>
                 </div>
                 <div class="card-body">
-                    <alert-notify :data-alert="dataAlert"/>
+                    <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
                     <form @submit.prevent="search()">
                         <div class="row">
                             <div class="col-sm-12 col-md-9">
@@ -26,7 +26,8 @@
             </div>
         </div>
 
-        <div v-if="showLoadingModal" class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
+        <load-modal v-if="showLoadingModal" />
+        <!--<div v-if="loadModal.show" class="modal" id="modalLoad1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -41,7 +42,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
+
     </section>
 </template>
 
@@ -49,9 +51,11 @@
     import SERVICE from "../services/ApiService";
     import MyTitle from "../components/MyTitle";
     import AlertNotify from "../components/AlertNotify";
+    import LoadModal from "../components/LoadModal";
+    import Util from '../Util';
 
     export default {
-        components: {AlertNotify, MyTitle},
+        components: {AlertNotify, MyTitle, LoadModal},
         name: "search",
         data: () => ({
             msg: undefined,
@@ -68,15 +72,11 @@
             },
             //Funcion que muestra la carga por modal
             openLoadModal(){
-                this.showLoadingModal = true;
-                $(document).ready(() => {
-                    $('#exampleModalCenter').modal({show: true, backdrop: 'static', keyboard: false});
-                });
+                Util.openLoadModal(this);
             },
             //Funcion que oculta la carga por modal
             closeLoadModal(){
-                $('#exampleModalCenter').modal('hide');
-                this.showLoadingModal = false;
+                Util.closeLoadModal(this);
             },
         }
     }

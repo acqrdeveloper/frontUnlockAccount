@@ -28,6 +28,7 @@ const SERVICE = new Vuex.Store({
                     }
                 })
                 .catch((e) => {
+                    // self.showLoadingModal = false;
                     self.closeLoadModal();
                     self.dataAlert = e.response;
                     self.params.text_search = "";
