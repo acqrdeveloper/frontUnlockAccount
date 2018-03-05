@@ -23,7 +23,7 @@
                             <!--</button>-->
                             <button class="btn btn-primary btn-block" @click="btnYes()">
                                 <span>Si</span>
-                            </button>+
+                            </button>
                         </template>
                         <template v-if="arrayPhones.length === 1">
                             <button class="btn btn-primary btn-block" @click="btnYes()">

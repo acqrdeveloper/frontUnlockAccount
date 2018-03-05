@@ -41,34 +41,22 @@
             dataReset:{},
             dataAlert:{}
         },
-        data:()=>({
+        data:() => ({
             password_confirm:"",
             params:{
                 username :"",
                 password:"",
             },
         }),
-        methods:{
+        methods: {
             //Funcion que confirma la validacion de contraseñas
             validateConfirmPwd() {
                 return (this.params.password !== "" && this.password_confirm !== "") ? (this.params.password === this.password_confirm) ? false : true : true
             },
             //Funcion que envia por POST las contraseña nueva confirmada
             resetPwd(){
-                //ejecutar con modal carga
+                //Ejecutar con modal carga
                 this.$emit("eventResetPwd",this);
-                // this.dataAlert = {status:200,data:"excelenteeeeee"};
-                // this.openLoadModal();
-                // setTimeout(() => {
-                //     this.closeLoadModal();
-                //     this.showAlertResetSuccess = false;
-                //     if(this.showAlertResetSuccess){
-                //         this.showReset = undefined;
-                //         this.showResetAccept = undefined;
-                //         this.showResetPwd = undefined;
-                //         this.showAlertUnlockSuccess = undefined;
-                //     }
-                // }, 2000)
             },
         }
     }

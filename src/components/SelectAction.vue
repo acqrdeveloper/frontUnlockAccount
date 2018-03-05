@@ -173,10 +173,13 @@
         methods: {
             //Funcion para resetear desde event
             resetPwd() {
-                this.dataAlert = {status: 200, data: "excelenteeeeee"};
-                this.dataReset.showResetPwd = false;
-                this.dataReset.showAccept = false;
-                this.dataReset.showInfo = false;
+                this.openLoadModal();
+                this.params.username = this.data.username;
+                SERVICE.dispatch("reset", {self: this});
+                // this.dataAlert = {status: 200, data: "excelenteeeeee"};
+                // this.dataReset.showResetPwd = false;
+                // this.dataReset.showAccept = false;
+                // this.dataReset.showInfo = false;
             },
             //Funcion para buscar texto
             search() {
@@ -213,14 +216,6 @@
                 this.openLoadModal();
                 this.params.username = this.data.username;
                 SERVICE.dispatch("unlock", {self: this});
-
-                // this.showAlertUnlockSuccess = undefined;
-                // this.showAlertResetSuccess = undefined;
-                //ejecutar con modal carga
-                // setTimeout(() => {
-                //     this.closeLoadModal();
-                //     this.showAlertUnlockSuccess = true;
-                // }, 2000)
             },
             //Funcion que simula un error
             unlockdbl() {
