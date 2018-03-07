@@ -62,12 +62,9 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false "
-                             class="row">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false " class="row">
                             <div class="col-6">
-                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false"
-                                        class="btn btn-outline-success btn-block" @click="unlock()"
-                                        @dblclick="unlockdbl()">
+                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
                                     <i class="fa fa-unlock fa-fw"></i>
                                     <span>Desbloquear Cuenta</span>
                                 </button>
@@ -87,11 +84,11 @@
                     </div>
                 </div>
                 <!--Vista pasos para el reseteo-->
-                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset,arrayPhones"/>
+                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset, arrayPhones"/>
                 <!--Vista enviar codigo de seguridad-->
                 <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset"/>
                 <!--Vista reseteo de contraseña-->
-                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset" @eventResetPwd="resetPwd()"/>
+                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset, params" @eventResetPwd="resetPwd()"/>
             </div>
             <div class="card-footer">
                 <div class="row">
@@ -100,7 +97,7 @@
                             <div class="col-9">
                                 <form @submit.prevent="search()">
                                     <div class="input-group">
-                                        <input ref="input_search" type="text" v-model="params.text_search"
+                                        <input ref="inputSearch" type="text" v-model="params.text_search"
                                                class="form-control" placeholder="Dni, Username, Phone"
                                                aria-describedby="basic-addon2" required>
                                         <div class="input-group-append">
@@ -129,18 +126,18 @@
 
 <script>
     import Storage from 'vue-local-storage'
-    import SERVICE from "../services/ApiService";
-    import MyTitle from "../components/MyTitle";
-    import AlertNotify from "../components/AlertNotify";
-    import InfoReset from "../components/InfoReset";
-    import AcceptReset from "../components/AcceptReset";
-    import PwdReset from "../components/PwdReset";
-    import LoadModal from "../components/LoadModal";
-    import Util from '../Util';
+    import SERVICE from "../../services/ApiService";
+    import MyTitle from "../../components/layouts/MyTitle";
+    import AlertNotify from "../../components/layouts/AlertNotify";
+    import InfoReset from "../../components/reset/InfoReset";
+    import AcceptReset from "../../components/reset/AcceptReset";
+    import PwdReset from "../../components/reset/PwdReset";
+    import LoadModal from "../../components/layouts/LoadModal";
+    import Util from '../../util';
 
     export default {
         components: {AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
-        name: "select-action",
+        name: "actions",
         data: () => ({
             showAlertUnlockSuccess: undefined,
             showAlertResetSuccess: undefined,
@@ -173,13 +170,11 @@
         methods: {
             //Funcion para resetear desde event
             resetPwd() {
+                console.log(this.params);
                 this.openLoadModal();
                 this.params.username = this.data.username;
+                // this.params.password = obj.password;
                 SERVICE.dispatch("reset", {self: this});
-                // this.dataAlert = {status: 200, data: "excelenteeeeee"};
-                // this.dataReset.showResetPwd = false;
-                // this.dataReset.showAccept = false;
-                // this.dataReset.showInfo = false;
             },
             //Funcion para buscar texto
             search() {

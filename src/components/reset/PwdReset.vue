@@ -39,14 +39,15 @@
         name: "pwd-reset",
         props: {
             dataReset:{},
-            dataAlert:{}
+            dataAlert:{},
+            params:{},
         },
         data:() => ({
             password_confirm:"",
-            params:{
-                username :"",
-                password:"",
-            },
+            // params:{
+            //     username :"",
+            //     password:"",
+            // },
         }),
         methods: {
             //Funcion que confirma la validacion de contraseñas
@@ -56,7 +57,7 @@
             //Funcion que envia por POST las contraseña nueva confirmada
             resetPwd(){
                 //Ejecutar con modal carga
-                this.$emit("eventResetPwd",this);
+                this.$emit("eventResetPwd",[this.params]);
             },
         }
     }

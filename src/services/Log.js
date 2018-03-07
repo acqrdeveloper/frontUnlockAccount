@@ -4,8 +4,11 @@
 
 const Log = {
     //Funcion traza usuario confirma desbloqueo
-    logUnlockAccount(user) {
+    logUnlockAccountSuccess(user) {
         return user + " desbloqueó su cuenta con éxito";
+    },
+    logUnlockAccountError(user) {
+        return user + " no pudo desbloquear su cuenta";
     },
     //Funcion traza usuario acepta recibir codigo de seguridad
     logReceivedCode(user) {

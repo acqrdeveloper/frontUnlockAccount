@@ -3,8 +3,8 @@
  **/
 import Vue from 'vue';
 import Router from 'vue-router';
-import Search from './components/Search';
-import SelectAction from './components/SelectAction';
+import Index from './components/Index';
+import Actions from './components/action/Actions';
 import Storage from 'vue-local-storage';
 
 Vue.use(Router);
@@ -12,22 +12,22 @@ Vue.use(Router);
 const router = new Router({
     mode: 'history',
     routes: [
-        {path:"*",redirect:'/'},
-        {path:'/',name:'search',component:Search},
-        {path:'/action',name:'select-action',component:SelectAction,meta: {requiresAuth: true}},
+        {path: "*", redirect: '/'},
+        {path: '/', name: 'index', component: Index},
+        {path: '/actions', name: 'actions', component: Actions, meta: {requiresAuth: true}},
     ]
 });
 
 router.beforeEach((to, from, next) => {
 
-    if(to.path == '/search'){
+    if (to.path === '/') {
         Storage.remove("data_user");
-        console.log("Storage removed!");
+        console.log("Storage removed by route!");
     }
 
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    if (requiresAuth && Storage.get("data_user") == undefined) {
-        next('/search');
+    if (requiresAuth && Storage.get("data_user") === undefined) {
+        next('/');
     } else {
         next();
     }

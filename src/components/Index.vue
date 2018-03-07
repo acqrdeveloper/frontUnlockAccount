@@ -1,8 +1,7 @@
 <template>
     <section>
         <div class="text-center mt-5">
-            <img class="img-thumbnail" style="background-color: transparent;border: 0;width: 180px" src="logo.svg"
-                 alt="">
+            <img class="img-thumbnail" style="background-color: transparent;border: 0;width: 180px" src="logo.svg">
         </div>
         <div class="col-6 offset-3">
             <div class="card mt-5">
@@ -10,19 +9,19 @@
                     <my-title/>
                 </div>
                 <div class="card-body">
-                    <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert"
-                                  @eventCloseNotify="dataAlert = {}"/>
+                    <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
                     <form @submit.prevent="search()">
                         <div class="row">
                             <div class="col-sm-12 col-md-9">
-                                <input ref="input_search" v-model="params.text_search"
-                                       placeholder="Dni, Phone, Username" title="ingrese su dni, celular, usuario"
-                                       type="text" class="form-control" required/>
+                                <input ref="inputSearch" v-model="params.text_search"
+                                       placeholder="Dni, Phone, Username"
+                                       title="ingrese su dni, celular, usuario"
+                                       type="text"
+                                       class="form-control"
+                                       required/>
                             </div>
                             <div class="col-sm-12 col-md-3">
-                                <button type="submit" class="btn btn-primary btn-block"><i
-                                        class="fa fa-search fa-fw"></i>Buscar
-                                </button>
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search fa-fw"></i>Buscar</button>
                             </div>
                         </div>
                     </form>
@@ -53,14 +52,14 @@
 
 <script>
     import SERVICE from "../services/ApiService";
-    import MyTitle from "../components/MyTitle";
-    import AlertNotify from "../components/AlertNotify";
-    import LoadModal from "../components/LoadModal";
-    import Util from '../Util';
+    import MyTitle from "../components/layouts/MyTitle";
+    import AlertNotify from "../components/layouts/AlertNotify";
+    import LoadModal from "../components/layouts/LoadModal";
+    import Util from '../util';
 
     export default {
         components: {AlertNotify, MyTitle, LoadModal},
-        name: "search",
+        name: "index",
         data: () => ({
             msg: undefined,
             params: {
@@ -68,27 +67,9 @@
             },
             dataAlert: {},
             showLoadingModal: false,
-            arrdata: ['uno', 'dos', 'tres','cuatro','cinco'],
         }),
-        mounted() {
-            //generar token -> cache
-            // token_lumen
-
-
-            const keys = ['username', 'attempts', 'description', 'status'];
-            const values = [1,2,3,4];
-
-            function paramsToObject(keys,values) {
-                let obj = {};
-                for (let i = 0; i < values.length; i++) {
-                    obj[keys[i]] = values[i];
-                }
-                // return JSON.stringify(obj);
-                return obj;
-            }
-            console.log(paramsToObject(keys,values))
-
-
+        created(){
+            SERVICE.dispatch("generateTokenLDAP",{self: this});
         },
         methods: {
             search() {

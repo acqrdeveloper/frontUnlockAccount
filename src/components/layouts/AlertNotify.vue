@@ -9,13 +9,17 @@
                 <span>{{dataAlert.data}}</span>
             </div>
         </template>
-        <template v-if="dataAlert.status === 412">
-            <div class="alert alert-danger">
+        <template v-if="dataAlert.status !== 200">
+            <div :class=" dataAlert.class != undefined ? 'alert alert-' + dataAlert.class : 'alert alert-danger' ">
                 <button type="button" class="close" aria-label="Close" @click="close()">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true" class="mb-auto mt-auto">&times;</span>
                 </button>
-                <h5><i class="fa fa-close fa-fw"></i>Error</h5>
-                <span>{{dataAlert.data}}</span>
+                <h5>Mensaje</h5>
+                <span>
+                    <!--<i v-if="dataAlert.class == 'warning'" class="fa fa-exclamation-triangle"></i>-->
+                    <!--<i v-if="dataAlert.class == undefined" class="fa fa-close"></i>&nbsp;-->
+                    {{dataAlert.data}}
+                </span>
             </div>
         </template>
     </div>

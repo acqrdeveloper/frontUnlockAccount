@@ -17,10 +17,6 @@
                 <div class="row">
                     <div class="col-6">
                         <template v-if="arrayPhones.length >= 2">
-                            <!--<p>{{phone_number_checked.target.value}}</p>-->
-                            <!--<button :disabled="opt === phone_number_checked.target.value" class="btn btn-primary btn-block" @click="btnYes()">-->
-                                <!--<span>Si</span>-->
-                            <!--</button>-->
                             <button class="btn btn-primary btn-block" @click="btnYes()">
                                 <span>Si</span>
                             </button>
@@ -30,7 +26,6 @@
                                 <span>Si</span>
                             </button>
                         </template>
-
                     </div>
                     <div class="col-6">
                         <button class="btn btn-primary btn-block" @click="btnNot()">
@@ -52,10 +47,6 @@
         data:()=>({
             phone_number_checked:""
         }),
-        created(){
-          // this.$refs.optnumber.attr("checked");
-          console.log(this.$refs.phone_number_checked);
-        },
         methods:{
             //Funcion que cancela el envio del codigo de seguridad
             btnNot(){
