@@ -4,9 +4,9 @@
                 <div class="alert alert-secondary">
                     <h5>Advertencia</h5>
                     <span>Para proceder a resetear su contraseña, como medida de seguridad, procederemos a enviar un sms al numero movil <b>9*******73</b>, que se encuentra en el Active Directory.</span>
-                    <div v-if="arrayPhones.length >= 2" class="mt-2">
+                    <div v-if="arrayPhones.length > 1" class="mt-2">
                         <span class="ml-3">Por favor seleccione el numero movil, en el que desea recibir el codigo de seguridad:</span>
-                        <div class="ml-3" v-for="opt in arrayPhones">
+                        <div class="ml-3" v-for="opt in arrayPhones" :key="opt.id">
                             <div class="form-check">
                                 <input v-model="phone_number_checked" title type="radio" class="form-check-input" :id="'opt'+opt" name="opt_number" :value="opt" />
                                 <label class="form-check-label" :for="'opt'+opt">{{opt}}</label>
@@ -16,12 +16,7 @@
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <template v-if="arrayPhones.length >= 2">
-                            <button class="btn btn-primary btn-block" @click="btnYes()">
-                                <span>Si</span>
-                            </button>
-                        </template>
-                        <template v-if="arrayPhones.length === 1">
+                        <template v-if="arrayPhones.length <= 1">
                             <button class="btn btn-primary btn-block" @click="btnYes()">
                                 <span>Si</span>
                             </button>

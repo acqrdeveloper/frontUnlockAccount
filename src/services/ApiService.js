@@ -13,19 +13,20 @@ Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Axios.defaults.headers.common['X-Request-Project'] = 'interbank';//name proyect necesary for api lumen
 
 const ENV = {
-    API_LUMEN: "http://service-unlock-reset",//Domain server micro-framework - lumen
-    // API_NODE: "http://192.167.99.246:8090/api",//Domain server nodejs
-    API_NODE: "http://192.167.99.203:8090/api",//Domain server nodejs
+    API_LUMEN: "http://service-unlock-reset.sapia.pe",//Domain server micro-framework - lumen
+    API_NODE: "http://192.167.99.246:8090/api",//Domain server nodejs
+    // API_NODE: "http://192.167.99.203:8090/api",//Domain server nodejs
     NAME_PROYECT: "interbank",//Variable global
 };
 // const HEADER_DB = {headers: {'X-Request-Project': 'interbank'}};
 const SERVICE = new Vuex.Store({
     actions: {
         //Funcion generar token para el servicio LDAP
-        generateTokenLDAP({commit}, {self}) {
-            Axios.get("http://192.167.99.203:8090/authtoken/generate")
+        generateTokenLDAP({commit},{self}) {
+            Axios.get("http://192.167.99.246:8090/authtoken/generate")
                 .then((r) => {
-                    r.data.token != undefined ? Axios.defaults.headers.common['x-access-token'] = r.data.token : self.dataAlert = {
+                    Storage.set("data_token_nodejs", r.data.token);
+                    r.data.token != undefined ? Axios.defaults.headers.common['x-access-token'] = Storage.get("data_token_nodejs") : self.dataAlert = {
                         status: 500,
                         data: "Estimado no hay token"
                     };
@@ -43,7 +44,7 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion salir del sistema
-        exit({commit}, {self}) {
+        exit({commit},{self}) {
             Storage.remove("data_user");
             self.$router.replace("/");
             console.log("Storage removed by exit!");
@@ -51,7 +52,7 @@ const SERVICE = new Vuex.Store({
 
         //SEARCH
         //Funcion buscar
-        searchText({commit}, {self}) {
+        searchText({commit},{self}) {
             Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.params.text_search)
                 .then((r) => {
                     if (r.status === 200) {
@@ -74,7 +75,7 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion traza para buscar
-        createLogSearch({commit}, {self}) {
+        createLogSearch({commit},{self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-search", self.new_params)
                 .then((r) => {
                     self.subself.closeLoadModal();
@@ -116,7 +117,7 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion rebuscar
-        researchText({commit}, {self}) {
+        researchText({commit},{self}) {
             Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.params.text_search)
                 .then((r) => {
                     if (r.status === 200) {
@@ -138,7 +139,7 @@ const SERVICE = new Vuex.Store({
 
         //UNLOCK
         //Funcion desbloquear cuenta
-        unlock({commit}, {self}) {
+        unlock({commit},{self}) {
             Axios.get(ENV.API_NODE + "/unlockresetuser/unlock/" + self.params.username)
                 .then((r) => {
                     if (r.status === 200) {
@@ -162,7 +163,7 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion traza para desbloquear
-        createLogUnlock({commit}, {self}) {
+        createLogUnlock({commit},{self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-unlock", self.newparams)
                 .then((r) => {
                     if (r.status === 200) {
@@ -193,7 +194,7 @@ const SERVICE = new Vuex.Store({
 
         //RESET
         //Funcion resetear contraseña
-        reset({commit}, {self}) {
+        reset({commit},{self}) {
             Axios.post(ENV.API_NODE + "/unlockresetuser/resetpassword",self.params)
                 .then((r) => {
                     if (r.status === 200) {
@@ -227,26 +228,20 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion traza para reseteo
-        createLogReset({commit}, {self}) {
+        createLogReset({commit},{self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-reset", self)
                 .then((r) => {
                     if (r.status === 200) {
+                        console.log(r);
                         return true;
                     }
                 })
                 .catch((e) => {
+                    console.log(e.response);
                     return false;
                 })
         }
     }
 });
-
-function paramsToObject(keys, values) {
-    let obj = {};
-    for (let i = 0; i < values.length; i++) {
-        obj[keys[i]] = values[i];
-    }
-    return obj;
-}
 
 export default SERVICE;
