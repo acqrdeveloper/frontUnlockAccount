@@ -9,27 +9,6 @@
                 <div class="row">
                     <div class="col-12">
                         <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
-                        <!--<div v-if="showAlertUnlockSuccess === true" class="alert alert-success">
-                            <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
-                            <span>Estimado <b>{{data.name_complet}}</b>, su cuenta ha sido desbloqueada con éxito.</span>
-                        </div>
-                        <div v-if="showAlertUnlockSuccess === false" class="alert alert-warning">
-                            <h5><i class="fa fa-exclamation-triangle fa-fw"></i>Error</h5>
-                            <span>Estimado <b>{{data.name_complet}}</b>, lo sentimos hemos tenido un problema. Para proceder a desbloquear su cuenta de red intentelo nuevamente.</span><br>
-                            <h5 v-if="showUnlockOption" class="text-dark small">Si el problema persiste, comunicate al 215-5400 opcion #3.</h5>
-                        </div>
-                        <div v-if="showAlertResetSuccess === true" class="alert alert-success">
-                            <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
-                            <span>Estimado <b>{{data.name_complet}}</b>, su contraseña ha sido cambiada con éxito.</span>
-                        </div>
-                        <div v-if="showAlertResetSuccess === false" class="alert alert-warning">
-                            <h5><i class="fa fa-exclamation-triangle fa-fw"></i>Error</h5>
-                            <ul>
-                                <li>Debe contener una letra en mayusculas.</li>
-                                <li>Debe contener al menos un numero.</li>
-                                <li>Ambas contraseñas deben coincidir para habilitar el boton reset.</li>
-                            </ul>
-                        </div>-->
                     </div>
                 </div>
                 <!--Informacion inicial-->
@@ -63,22 +42,11 @@
                         </table>
                         <!--Acciones del negocio-->
                         <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false " class="row">
-                            <div class="col-6">
-                                <button v-if="showAlertUnlockSuccess === undefined || showAlertUnlockSuccess === true && showAlertUnlockSuccess !== false" class="btn btn-outline-success btn-block" @click="unlock()" @dblclick="unlockdbl()">
-                                    <i class="fa fa-unlock fa-fw"></i>
-                                    <span>Desbloquear Cuenta</span>
-                                </button>
-                                <button v-if="showAlertUnlockSuccess === false" class="btn btn-outline-dark btn-block"
-                                        @click="unlock()">
-                                    <i class="fa fa-refresh fa-fw"></i>
-                                    <span>Intentar Nuevamente</span>
-                                </button>
+                            <div v-if="isAdmin" class="col-6">
+                                <button-unlock @listenUnlock="unlock()"/>
                             </div>
-                            <div class="col-6">
-                                <button class="btn btn-outline-danger btn-block" @click="reset()">
-                                    <i class="fa fa-home fa-fw"></i>
-                                    <span>Reset Contraseña</span>
-                                </button>
+                            <div :class="isAdmin ? 'col-6' : 'col-12'">
+                                <button-reset @listenReset="reset()"/>
                             </div>
                         </div>
                     </div>
@@ -92,22 +60,16 @@
             </div>
             <div class="card-footer">
                 <div class="row">
-                    <div class="offset-6 col-6">
+                    <div class="col-6">
+                        <label>
+                            <input type="checkbox" class="checkbox" v-model="isAdmin">
+                            Administrador
+                        </label>
+                    </div>
+                    <div class="col-6">
                         <div class="row">
                             <div class="col-9">
-                                <form @submit.prevent="search()">
-                                    <div class="input-group">
-                                        <input ref="inputSearch" type="text" v-model="params.text_search"
-                                               class="form-control" placeholder="Dni, Username, Phone"
-                                               aria-describedby="basic-addon2" required>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary btn-block" type="submit">
-                                                <i class="fa fa-search fa-fw"></i>
-                                                <span>Buscar</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                                <form-search v-if="isAdmin"  :params="params" @listenSearch="search()"/>
                             </div>
                             <div class="col-3">
                                 <button class="btn btn-primary btn-block" @click="exit()">
@@ -129,16 +91,20 @@
     import SERVICE from "../../services/ApiService";
     import MyTitle from "../../components/layouts/MyTitle";
     import AlertNotify from "../../components/layouts/AlertNotify";
-    import InfoReset from "../../components/reset/InfoReset";
-    import AcceptReset from "../../components/reset/AcceptReset";
-    import PwdReset from "../../components/reset/PwdReset";
+    import InfoReset from "../../components/layouts_reset/InfoReset";
+    import AcceptReset from "../../components/layouts_reset/AcceptReset";
+    import PwdReset from "../../components/layouts_reset/PwdReset";
     import LoadModal from "../../components/layouts/LoadModal";
     import Util from '../../util';
+    import FormSearch from "../layouts_search/FormSearch";
+    import ButtonReset from "../layouts_action/ButtonReset";
+    import ButtonUnlock from "../layouts_action/ButtonUnlock";
 
     export default {
-        components: {AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
         name: "actions",
+        components: {ButtonUnlock, ButtonReset, FormSearch, AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
         data: () => ({
+            isAdmin: false,
             showAlertUnlockSuccess: undefined,
             showAlertResetSuccess: undefined,
             showReset: undefined,
@@ -170,7 +136,6 @@
         methods: {
             //Funcion para resetear desde event
             resetPwd() {
-                console.log(this.params);
                 this.openLoadModal();
                 this.params.username = this.data.username;
                 // this.params.password = obj.password;

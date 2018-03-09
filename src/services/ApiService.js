@@ -7,29 +7,31 @@ import Axios from 'axios';
 import * as Vuex from 'vuex';
 import Storage from 'vue-local-storage';
 import Log from './Log';
+import Util from './../util';
+import ENV from './../env';
 
 Vue.use(Vuex, Storage);
 Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-Axios.defaults.headers.common['X-Request-Project'] = 'interbank';//name proyect necesary for api lumen
+Axios.defaults.headers.common['X-Request-Project'] = ENV.NAME_PROYECT;//name proyect necesary for api lumen
+Axios.defaults.headers.common['x-access-token'] = Storage.get("data_token_nodejs");
 
-const ENV = {
-    API_LUMEN: "http://service-unlock-reset.sapia.pe",//Domain server micro-framework - lumen
-    API_NODE: "http://192.167.99.246:8090/api",//Domain server nodejs
-    // API_NODE: "http://192.167.99.203:8090/api",//Domain server nodejs
-    NAME_PROYECT: "interbank",//Variable global
-};
-// const HEADER_DB = {headers: {'X-Request-Project': 'interbank'}};
 const SERVICE = new Vuex.Store({
     actions: {
+        //TOKEN
         //Funcion generar token para el servicio LDAP
-        generateTokenLDAP({commit},{self}) {
+        generateTokenLDAP({commit}, {self}) {
             Axios.get("http://192.167.99.246:8090/authtoken/generate")
                 .then((r) => {
                     Storage.set("data_token_nodejs", r.data.token);
-                    r.data.token != undefined ? Axios.defaults.headers.common['x-access-token'] = Storage.get("data_token_nodejs") : self.dataAlert = {
-                        status: 500,
-                        data: "Estimado no hay token"
-                    };
+                    if (r.data.token != undefined) {
+                        Axios.defaults.headers.common['x-access-token'] = Storage.get("data_token_nodejs");
+                    } else {
+                        delete Axios.defaults.headers.common['x-access-token'];
+                        self.dataAlert = {
+                            status: 500,
+                            data: "Estimado no hay token"
+                        };
+                    }
                 })
                 .catch((e) => {
                     if (e.response == undefined) {
@@ -44,15 +46,18 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion salir del sistema
-        exit({commit},{self}) {
+        exit({commit}, {self}) {
+            delete Axios.defaults.headers.common['x-access-token'];
             Storage.remove("data_user");
+            Storage.remove("data_token_nodejs");
             self.$router.replace("/");
-            console.log("Storage removed by exit!");
+            console.log("All storage removed");
         },
 
         //SEARCH
         //Funcion buscar
-        searchText({commit},{self}) {
+        searchText({commit}, {self}) {
+            Util.openLoadModal(self);
             Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.params.text_search)
                 .then((r) => {
                     if (r.status === 200) {
@@ -75,10 +80,10 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion traza para buscar
-        createLogSearch({commit},{self}) {
+        createLogSearch({commit}, {self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-search", self.new_params)
                 .then((r) => {
-                    self.subself.closeLoadModal();
+                    Util.closeLoadModal(self.subself);
                     if (r.status == 200) {
                         //Validar que sea un error de servidor
                         if (typeof self.temp_data.response == 'string') {
@@ -106,18 +111,25 @@ const SERVICE = new Vuex.Store({
                     }
                 })
                 .catch((e) => {
-                    self.subself.closeLoadModal();
+                    Util.closeLoadModal(self.subself);
                     self.subself.dataAlert = e.response;
                 })
                 .finally(() => {
-                    if (self.subself.$refs.inputSearch != undefined) {
-                        self.subself.params.text_search = "";
-                        self.subself.$refs.inputSearch.focus();
+                    if (self.subself.$route.path == '/') {
+                        if (self.subself.$children[2].$refs.inputSearch != undefined) {
+                            self.subself.params.text_search = "";
+                            self.subself.$children[2].$refs.inputSearch.focus();
+                        }
+                    } else {//path == '/admin-search'
+                        if (self.subself.$children[1].$refs.inputSearch != undefined) {
+                            self.subself.params.text_search = "";
+                            self.subself.$children[1].$refs.inputSearch.focus();
+                        }
                     }
                 })
         },
         //Funcion rebuscar
-        researchText({commit},{self}) {
+        researchText({commit}, {self}) {
             Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.params.text_search)
                 .then((r) => {
                     if (r.status === 200) {
@@ -133,13 +145,13 @@ const SERVICE = new Vuex.Store({
                 })
                 .finally(() => {
                     self.params.text_search = "";
-                    self.$refs.inputSearch.focus();
+                    self.$children[3].$refs.inputSearch.focus();
                 })
         },
 
         //UNLOCK
         //Funcion desbloquear cuenta
-        unlock({commit},{self}) {
+        unlock({commit}, {self}) {
             Axios.get(ENV.API_NODE + "/unlockresetuser/unlock/" + self.params.username)
                 .then((r) => {
                     if (r.status === 200) {
@@ -163,7 +175,7 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion traza para desbloquear
-        createLogUnlock({commit},{self}) {
+        createLogUnlock({commit}, {self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-unlock", self.newparams)
                 .then((r) => {
                     if (r.status === 200) {
@@ -194,8 +206,8 @@ const SERVICE = new Vuex.Store({
 
         //RESET
         //Funcion resetear contraseña
-        reset({commit},{self}) {
-            Axios.post(ENV.API_NODE + "/unlockresetuser/resetpassword",self.params)
+        reset({commit}, {self}) {
+            Axios.post(ENV.API_NODE + "/unlockresetuser/resetpassword", self.params)
                 .then((r) => {
                     if (r.status === 200) {
                         const rpta = r;
@@ -206,9 +218,9 @@ const SERVICE = new Vuex.Store({
                                     self.dataAlert = rpta;
                                     Storage.set("data_user", r.data);
                                     self.data = Storage.get("data_user");
-                                    self.dataReset.showInfo =  false;
-                                    self.dataReset.showAccept =  false;
-                                    self.dataReset.showResetPwd =  false;
+                                    self.dataReset.showInfo = false;
+                                    self.dataReset.showAccept = false;
+                                    self.dataReset.showResetPwd = false;
                                 }
                             })
                             .catch((e) => {
@@ -228,7 +240,7 @@ const SERVICE = new Vuex.Store({
                 })
         },
         //Funcion traza para reseteo
-        createLogReset({commit},{self}) {
+        createLogReset({commit}, {self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-reset", self)
                 .then((r) => {
                     if (r.status === 200) {

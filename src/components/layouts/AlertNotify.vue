@@ -5,7 +5,7 @@
                 <button type="button" class="close" aria-label="Close" @click="close()">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h5><i class="fa fa-check fa-fw"></i>Bien</h5>
+                <h5>Bien</h5>
                 <span>{{dataAlert.data}}</span>
             </div>
         </template>
