@@ -1,7 +1,6 @@
 <template>
-    <button class="btn btn-outline-danger btn-block" @click="reset()">
-        <i class="fa fa-home fa-fw"></i>
-        <span>Reset Contraseña</span>
+    <button title="click para inciar los pasos del reseteo de contraseña." class="btn btn-outline-danger btn-block" @click="reset()">
+        <span>Contraseña</span>
     </button>
 </template>
 

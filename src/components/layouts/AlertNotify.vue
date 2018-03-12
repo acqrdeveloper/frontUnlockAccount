@@ -5,7 +5,7 @@
                 <button type="button" class="close" aria-label="Close" @click="close()">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h5>Bien</h5>
+                <h5>Mensaje</h5>
                 <span>{{dataAlert.data}}</span>
             </div>
         </template>
@@ -15,11 +15,7 @@
                     <span aria-hidden="true" class="mb-auto mt-auto">&times;</span>
                 </button>
                 <h5>Mensaje</h5>
-                <span>
-                    <!--<i v-if="dataAlert.class == 'warning'" class="fa fa-exclamation-triangle"></i>-->
-                    <!--<i v-if="dataAlert.class == undefined" class="fa fa-close"></i>&nbsp;-->
-                    {{dataAlert.data}}
-                </span>
+                <span>{{dataAlert.data}}</span>
             </div>
         </template>
     </div>

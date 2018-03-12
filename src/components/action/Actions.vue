@@ -8,14 +8,15 @@
                 <!--Alertas-->
                 <div class="row">
                     <div class="col-12">
-                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
+                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert"
+                                      @eventCloseNotify="dataAlert = {}"/>
                     </div>
                 </div>
                 <!--Informacion inicial-->
                 <div class="row">
                     <div class="col-4">
                         <div class="img-thumbnail text-center">
-                            <img src="http://www.moweble.com/console/wp-content/themes/MagMan/timthumb.php?src=http://www.moweble.com/console/wp-content/uploads/2015/08/marry.jpg&w=720&h=&zc=1&q=80" alt="" width="260"/>
+                            <img class="p-3" :src="getImgUrl('logo.svg')" alt="image" width="225"/>
                         </div>
                     </div>
                     <div class="col-8">
@@ -41,7 +42,8 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false " class="row">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false "
+                             class="row">
                             <div v-if="isAdmin" class="col-6">
                                 <button-unlock @listenUnlock="unlock()"/>
                             </div>
@@ -52,27 +54,22 @@
                     </div>
                 </div>
                 <!--Vista pasos para el reseteo-->
-                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset, arrayPhones"/>
+                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset" @eventAcceptReceivedCode="acceptReceivedCode()"/>
                 <!--Vista enviar codigo de seguridad-->
-                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset"/>
+                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset" @eventSendReceivedCode="sendReceivedCode()"/>
                 <!--Vista reseteo de contraseña-->
-                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset, params" @eventResetPwd="resetPwd()"/>
+                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset, params" @eventResetPwd="resetPwd()" @eventResetGeneratePwd="resetGeneratePwd()"/>
             </div>
             <div class="card-footer">
                 <div class="row">
-                    <div class="col-6">
-                        <label>
-                            <input type="checkbox" class="checkbox" v-model="isAdmin">
-                            Administrador
-                        </label>
-                    </div>
+                    <div class="col-6"><!--if exist adminitrator--></div>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-9">
-                                <form-search v-if="isAdmin"  :params="params" @listenSearch="search()"/>
+                                <form-search v-if="isAdmin" :params="params" @listenSearch="search()"/>
                             </div>
                             <div class="col-3">
-                                <button class="btn btn-primary btn-block" @click="exit()">
+                                <button class="btn btn-secondary btn-block" @click="exit()">
                                     <i class="fa fa-sign-out fa-fw"></i>
                                     <span>Salir</span>
                                 </button>
@@ -89,20 +86,30 @@
 <script>
     import Storage from 'vue-local-storage'
     import SERVICE from "../../services/ApiService";
+    import Util from '../../util';
     import MyTitle from "../../components/layouts/MyTitle";
     import AlertNotify from "../../components/layouts/AlertNotify";
     import InfoReset from "../../components/layouts_reset/InfoReset";
     import AcceptReset from "../../components/layouts_reset/AcceptReset";
     import PwdReset from "../../components/layouts_reset/PwdReset";
     import LoadModal from "../../components/layouts/LoadModal";
-    import Util from '../../util';
     import FormSearch from "../layouts_search/FormSearch";
     import ButtonReset from "../layouts_action/ButtonReset";
     import ButtonUnlock from "../layouts_action/ButtonUnlock";
 
     export default {
         name: "actions",
-        components: {ButtonUnlock, ButtonReset, FormSearch, AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
+        components: {
+            ButtonUnlock,
+            ButtonReset,
+            FormSearch,
+            AlertNotify,
+            MyTitle,
+            InfoReset,
+            AcceptReset,
+            PwdReset,
+            LoadModal
+        },
         data: () => ({
             isAdmin: false,
             showAlertUnlockSuccess: undefined,
@@ -128,17 +135,25 @@
                 showAccept: false,
                 showResetPwd: false,
             },
-            arrayPhones:[],
+            arrayPhones: [],
         }),
         created() {
             this.load();
         },
         methods: {
-            //Funcion para resetear desde event
+            sendReceivedCode(){
+                SERVICE.dispatch("sendReceivedCode", {self: this});
+            },
+            acceptReceivedCode(){
+                SERVICE.dispatch("acceptReceivedCode", {self: this});
+            },
+            //Funcion que autogenerar contraseña y resetear
+            resetGeneratePwd(){
+              alert("generate Pwd");
+            },
+            //Funcion resetear contraseña
             resetPwd() {
-                this.openLoadModal();
                 this.params.username = this.data.username;
-                // this.params.password = obj.password;
                 SERVICE.dispatch("reset", {self: this});
             },
             //Funcion para buscar texto
@@ -201,18 +216,22 @@
             //Funcion valida si tiene telefono en el AD para tomar una accion
             validatePhone() {
                 if (Storage.get("data_user").phone_number !== undefined) {
-                    this.arrayPhones = ["9******93","9******32","9******54"];
+                    this.arrayPhones = ["9******93", "9******32", "9******54"];
                     // this.arrayPhones = ["997397243"];
                     // let arrPhone = Storage.get("data_user").phone_number;
-                        this.dataAlert = {};
-                        this.dataReset.showInfo = true;
+                    this.dataAlert = {};
+                    this.dataReset.showInfo = true;
                 } else {
                     this.dataAlert = {
                         status: 412,
                         data: "Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 405-7877."
                     };
                 }
-            }
+            },
+            //Funcion para cargar imagen
+            getImgUrl(img) {
+                return require('@/assets/vendor/img/' + img);
+            },
         }
     }
 

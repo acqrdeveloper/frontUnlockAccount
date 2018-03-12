@@ -2,29 +2,20 @@
         <div class="row mt-3">
             <div class="col-12">
                 <div class="alert alert-secondary">
-                    <h5>Advertencia</h5>
-                    <span>Para proceder a resetear su contraseña, como medida de seguridad, procederemos a enviar un sms al numero movil <b>9*******73</b>, que se encuentra en el Active Directory.</span>
-                    <div v-if="arrayPhones.length > 1" class="mt-2">
-                        <span class="ml-3">Por favor seleccione el numero movil, en el que desea recibir el codigo de seguridad:</span>
-                        <div class="ml-3" v-for="opt in arrayPhones" :key="opt.id">
-                            <div class="form-check">
-                                <input v-model="phone_number_checked" title type="radio" class="form-check-input" :id="'opt'+opt" name="opt_number" :value="opt" />
-                                <label class="form-check-label" :for="'opt'+opt">{{opt}}</label>
-                            </div>
-                        </div>
-                    </div>
+                    <h5>Paso #1</h5>
+                    <span>Como medida de seguridad, procederemos a enviar un sms al numero movil <b>9*******73</b> que tenemos registrado en el Active Directory.</span>
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <template v-if="arrayPhones.length <= 1">
-                            <button class="btn btn-primary btn-block" @click="btnYes()">
-                                <span>Si</span>
-                            </button>
-                        </template>
+                        <button class="btn btn-primary btn-block" @click="btnYes()">
+                            <i class="fa fa-check fa-fw"></i>
+                            <span>Aceptar</span>
+                        </button>
                     </div>
                     <div class="col-6">
                         <button class="btn btn-primary btn-block" @click="btnNot()">
-                            <span>No</span>
+                            <i class="fa fa-close fa-fw"></i>
+                            <span>Cancelar</span>
                         </button>
                     </div>
                 </div>
@@ -37,7 +28,6 @@
         name: "info-reset",
         props: {
             dataReset:{},
-            arrayPhones:[]
         },
         data:()=>({
             phone_number_checked:""
@@ -51,6 +41,7 @@
             btnYes(){
                 this.dataReset.showInfo = false;
                 this.dataReset.showAccept = true;
+                this.$emit('eventAcceptReceivedCode')
             }
         }
     }

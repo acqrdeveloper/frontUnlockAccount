@@ -3,29 +3,20 @@
  **/
 import Vue from 'vue';
 import Router from 'vue-router';
-import Actions from './components/action/Actions';
 import Storage from 'vue-local-storage';
 
-
-import Login from './components/login/Login';
+import Actions from './components/action/Actions';
 import Search from './components/search/Search';
-import SearchAdmin from './components/search/SearchAdmin';
-import Reset from './components/reset/Reset';
-import ResetAdmin from './components/reset/ResetAdmin';
 
 Vue.use(Router);
 
 const router = new Router({
     mode: 'history',
     routes: [
+        //Reestructuracion para produccion
         {path: "*", redirect: '/'},
-        {path: '/actions', name: 'actions', component: Actions, meta: {requiresAuth: true}},
-        //Reestructuracion del proyecto
         {path: '/', name: 'search', component: Search},
-        {path: '/login', name: 'login', component: Login},
-        {path: '/admin-search', name: 'search-admin', component: SearchAdmin},
-        {path: '/reset', name: 'reset', component: Reset},
-        {path: '/admin-reset', name: 'reset-admin', component: ResetAdmin},
+        {path: '/actions', name: 'actions', component: Actions, meta: {requiresAuth: true}},
     ]
 });
 

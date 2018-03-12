@@ -53,7 +53,6 @@ const SERVICE = new Vuex.Store({
             self.$router.replace("/");
             console.log("All storage removed");
         },
-
         //SEARCH
         //Funcion buscar
         searchText({commit}, {self}) {
@@ -61,71 +60,46 @@ const SERVICE = new Vuex.Store({
             Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.params.text_search)
                 .then((r) => {
                     if (r.status === 200) {
-                        const log = {
-                            username: self.params.username,
-                            description: "Alguien busco " + self.params.text_search + " con éxito",
-                            status: 1
-                        };
-                        this.dispatch("createLogSearch", {self: {new_params: log, subself: self, temp_data: r}});
+                        Util.closeLoadModal(self);
+                        self.dataAlert = {};
+                        Storage.set("data_user", r.data);
+                        self.$router.replace("/actions");
                     }
                 })
                 .catch((e) => {
-                    const log = {
-                        username: self.params.username,
-                        description: "Alguien busco " + self.params.text_search + " sin éxito",
-                        message: e.response.data,
-                        status: 2
-                    };
-                    this.dispatch("createLogSearch", {self: {new_params: log, subself: self, temp_data: e}});
+                    Util.closeLoadModal(self);
+                    self.dataAlert = e.response;
                 })
+                .finally(() => {
+                    self.new_params = {
+                        username: self.params.username,
+                        description: "Alguien busco " + self.params.text_search + " con éxito",
+                        status: 1
+                    };
+                    this.dispatch("createLogSearch", {self: self});
+                    if (self.$route.path == '/') {
+                        if (self.$children[2].$refs.inputSearch != undefined) {
+                            self.params.text_search = "";
+                            self.$children[2].$refs.inputSearch.focus();
+                        }
+                    } else {//path == '/admin-search'
+                        if (self.$children[1].$refs.inputSearch != undefined) {
+                            self.params.text_search = "";
+                            self.$children[1].$refs.inputSearch.focus();
+                        }
+                    }
+                });
         },
         //Funcion traza para buscar
         createLogSearch({commit}, {self}) {
             Axios.post(ENV.API_LUMEN + "/create-log-search", self.new_params)
                 .then((r) => {
-                    Util.closeLoadModal(self.subself);
                     if (r.status == 200) {
-                        //Validar que sea un error de servidor
-                        if (typeof self.temp_data.response == 'string') {
-                            self.subself.dataAlert = {
-                                status: 500,
-                                data: "Estimado estamos trabajando en los servidores, favor de reintentar conectarse nuevamente o mas tarde",
-                                class: "warning"
-                            };
-                        }
-                        //Validar que sea un objeto
-                        if (typeof self.temp_data == 'object') {
-                            //Status Error desde la api NODE
-                            if (self.temp_data.response != undefined) {
-                                if (self.temp_data.response.status === 412) {
-                                    self.subself.dataAlert = self.temp_data.response;
-                                }
-                            }
-                            //Status Correcto desde la api NODE
-                            if (self.temp_data.status === 200) {
-                                self.subself.dataAlert = {};
-                                Storage.set("data_user", self.temp_data.data);
-                                self.subself.$router.replace("/actions");
-                            }
-                        }
+                        console.log(r.statusText);
                     }
                 })
                 .catch((e) => {
-                    Util.closeLoadModal(self.subself);
-                    self.subself.dataAlert = e.response;
-                })
-                .finally(() => {
-                    if (self.subself.$route.path == '/') {
-                        if (self.subself.$children[2].$refs.inputSearch != undefined) {
-                            self.subself.params.text_search = "";
-                            self.subself.$children[2].$refs.inputSearch.focus();
-                        }
-                    } else {//path == '/admin-search'
-                        if (self.subself.$children[1].$refs.inputSearch != undefined) {
-                            self.subself.params.text_search = "";
-                            self.subself.$children[1].$refs.inputSearch.focus();
-                        }
-                    }
+                    console.error(e.response.statusText);
                 })
         },
         //Funcion rebuscar
@@ -148,7 +122,6 @@ const SERVICE = new Vuex.Store({
                     self.$children[3].$refs.inputSearch.focus();
                 })
         },
-
         //UNLOCK
         //Funcion desbloquear cuenta
         unlock({commit}, {self}) {
@@ -203,20 +176,19 @@ const SERVICE = new Vuex.Store({
                     self.subself.dataAlert = e.response;
                 })
         },
-
         //RESET
         //Funcion resetear contraseña
         reset({commit}, {self}) {
+            Util.openLoadModal(self);
             Axios.post(ENV.API_NODE + "/unlockresetuser/resetpassword", self.params)
                 .then((r) => {
                     if (r.status === 200) {
-                        const rpta = r;
                         Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.params.username)
-                            .then((r) => {
-                                if (r.status === 200) {
-                                    self.closeLoadModal();
-                                    self.dataAlert = rpta;
-                                    Storage.set("data_user", r.data);
+                            .then((rpta) => {
+                                if (rpta.status === 200) {
+                                    Util.closeLoadModal(self);
+                                    self.dataAlert = r;
+                                    Storage.set("data_user", rpta.data);
                                     self.data = Storage.get("data_user");
                                     self.dataReset.showInfo = false;
                                     self.dataReset.showAccept = false;
@@ -224,34 +196,48 @@ const SERVICE = new Vuex.Store({
                                 }
                             })
                             .catch((e) => {
-                                self.closeLoadModal();
+                                Util.closeLoadModal(self);
                                 self.dataAlert = e.response;
-                            })
-                            .finally(() => {
-                                self.params.text_search = "";
-                                self.$refs.inputSearch.focus();
                             })
                     }
                 })
                 .catch((e) => {
-                    self.closeLoadModal();
+                    Util.closeLoadModal(self);
                     self.dataAlert = e.response;
                     console.error(e);
+                })
+                .finally(()=>{
+                    self.new_params = {
+                        username: self.params.username,
+                        description: self.params.username + " reseteo su contraseña",
+                        status: 1
+                    };
+                    this.dispatch("createLogReset",{self:self})
                 })
         },
         //Funcion traza para reseteo
         createLogReset({commit}, {self}) {
-            Axios.post(ENV.API_LUMEN + "/create-log-reset", self)
+            Axios.post(ENV.API_LUMEN + "/create-log-reset", self.new_params)
                 .then((r) => {
                     if (r.status === 200) {
-                        console.log(r);
-                        return true;
+                        console.log(r.statusText);
                     }
                 })
                 .catch((e) => {
-                    console.log(e.response);
-                    return false;
+                    console.log(e.response.statusText);
                 })
+        },
+        acceptReceivedCode({commit}, {self}){
+            Util.openLoadModal(self);
+            setTimeout(()=>{
+                Util.closeLoadModal(self);
+            },2500);
+        },
+        sendReceivedCode({commit}, {self}){
+            Util.openLoadModal(self);
+            setTimeout(()=>{
+                Util.closeLoadModal(self);
+            },2500);
         }
     }
 });
