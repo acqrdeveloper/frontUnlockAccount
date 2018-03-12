@@ -7,8 +7,8 @@
                        required autofocus/>
             </div>
             <div class="col-sm-12 col-md-3">
-                <button type="submit" class="btn btn-primary btn-block"><i
-                        class="fa fa-search fa-fw"></i>Buscar
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fa fa-search fa-fw"></i>Buscar
                 </button>
             </div>
         </div>
