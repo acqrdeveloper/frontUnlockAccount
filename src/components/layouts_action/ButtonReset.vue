@@ -1,6 +1,6 @@
 <template>
     <button title="click para inciar los pasos del reseteo de contraseña." class="btn btn-outline-danger btn-block" @click="reset()">
-        <span>Contraseña</span>
+        <span>Resetear Contraseña</span>
     </button>
 </template>
 

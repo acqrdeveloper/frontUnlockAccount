@@ -3,7 +3,7 @@
             <div class="col-12">
                 <div class="alert alert-secondary">
                     <h5>Paso #1</h5>
-                    <span>Como medida de seguridad, procederemos a enviar un sms al numero movil <b>9*******73</b> que tenemos registrado en el Active Directory.</span>
+                    <span>Como medida de seguridad, procederemos a enviar un sms al numero movil <b>{{storage.get("data_user").phone_number}}</b> que tenemos registrado en el Active Directory.</span>
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -24,23 +24,23 @@
 </template>
 
 <script>
+    import Storage from 'vue-local-storage';
     export default {
         name: "info-reset",
         props: {
-            dataReset:{},
+            dataReset:{}
         },
         data:()=>({
-            phone_number_checked:""
+            phone_number_checked:"",
+            storage:Storage,
         }),
         methods:{
             //Funcion que cancela el envio del codigo de seguridad
             btnNot(){
-                this.dataReset.showInfo = false;
+                this.$emit('eventCancelInfoReset')
             },
             //funcion que acepta obtener el codigo de seguridad por mensaje
             btnYes(){
-                this.dataReset.showInfo = false;
-                this.dataReset.showAccept = true;
                 this.$emit('eventAcceptReceivedCode')
             }
         }

@@ -3,7 +3,9 @@
         <div class="col-12">
             <div class="alert alert-secondary">
                 <h5>Paso #2</h5>
-                <span>Ingrese el codigo de 6 digitos que hemos enviado al numero movil <b>9*******73</b>.</span><a title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link" href @click.prevent="reSend()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
+                <span>Ingrese el codigo de 5 digitos que hemos enviado al numero movil <b>{{storage.get("data_user").phone_number}}</b>.</span><a
+                    title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link"
+                    href @click.prevent="reSend()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
                 <ul>
                     <li>Debe ingresar el codigo de seguridad para habilitar el boton <b>"Aceptar"</b></li>
                 </ul>
@@ -11,11 +13,11 @@
             <div class="row">
                 <div class="col-8">
                     <div class="form-group">
-                        <input v-model="inputSecurity" type="text" class="form-control" placeholder="Ingrese su codigo de seguridad de 6 digitos" autofocus maxlength="6" />
+                        <input ref="inputPin" v-model="params.pin" type="text" class="form-control" placeholder="Ingrese su codigo de seguridad de 5 digitos" autofocus maxlength="5" />
                     </div>
                 </div>
                 <div class="col-2">
-                    <template v-if="inputSecurity.charAt(5) === '' ">
+                    <template v-if="params.pin.charAt(4) === '' ">
                         <button disabled class="btn btn-primary btn-block">
                             <i class="fa fa-check fa-fw"></i>
                             <span>Aceptar</span>
@@ -40,28 +42,31 @@
 </template>
 
 <script>
+    import Storage from 'vue-local-storage';
+
     export default {
         name: "accept-reset",
         props: {
-            dataReset:{}
+            dataReset: {},
+            params: {},
         },
-        data:()=>({
-            inputSecurity:""
+        data: () => ({
+            inputSecurity: "",
+            storage: Storage,
         }),
-        methods:{
+        methods: {
             //Funcion que envia por POST el codigo de seguridad
-            btnYesSecutity(){
-                this.dataReset.showAccept = false;
-                this.dataReset.showResetPwd = true;
+            btnYesSecutity() {
                 this.$emit('eventSendReceivedCode')
             },
             //Funcion que cancela enviar por POST el codigo de seguridad
-            btnNotSecutity(){
-                this.dataReset.showAccept = false;
-                this.dataReset.showInfo = false;
-            }
+            btnNotSecutity() {
+                this.$emit('eventCancelAcceptReset');
+            },
         }
     }
+
+
 </script>
 
 <style scoped>

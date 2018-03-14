@@ -11,16 +11,16 @@ import Util from './../util';
 import ENV from './../env';
 
 Vue.use(Vuex, Storage);
-Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Axios.defaults.headers.common['X-Request-Project'] = ENV.NAME_PROYECT;//name proyect necesary for api lumen
 Axios.defaults.headers.common['x-access-token'] = Storage.get("data_token_nodejs");
+Axios.defaults.headers.common['X-Access-Token-Lvl'] = Storage.get("data_token_lvl");
 
 const SERVICE = new Vuex.Store({
     actions: {
-        //TOKEN
-        //Funcion generar token para el servicio LDAP
+        //TOKENS
+        //Funcion generar token para el servicio LDAP y Laravel
         generateTokenLDAP({commit}, {self}) {
-            Axios.get("http://192.167.99.246:8090/authtoken/generate")
+            Axios.get(ENV.API_TOKEN_NODE)
                 .then((r) => {
                     Storage.set("data_token_nodejs", r.data.token);
                     if (r.data.token != undefined) {
@@ -29,7 +29,8 @@ const SERVICE = new Vuex.Store({
                         delete Axios.defaults.headers.common['x-access-token'];
                         self.dataAlert = {
                             status: 500,
-                            data: "Estimado no hay token"
+                            data: "Estimado usuario su sesion ha terminado, actualice su navegador",
+                            class: "danger"
                         };
                     }
                 })
@@ -37,7 +38,7 @@ const SERVICE = new Vuex.Store({
                     if (e.response == undefined) {
                         self.dataAlert = {
                             status: 500,
-                            data: "Estimado su sesion ha expirado porfavor, actualice su navegador",
+                            data: "Estimado usuario su sesion ha terminado, actualice su navegador",
                             class: "danger"
                         };
                     } else {
@@ -45,13 +46,25 @@ const SERVICE = new Vuex.Store({
                     }
                 })
         },
-        //Funcion salir del sistema
-        exit({commit}, {self}) {
-            delete Axios.defaults.headers.common['x-access-token'];
-            Storage.remove("data_user");
-            Storage.remove("data_token_nodejs");
-            self.$router.replace("/");
-            console.log("All storage removed");
+        generateTokenLaravel({commit}, {self}) {
+            Axios.get(ENV.API_TOKEN_LARAVEL)
+                .then((r) => {
+                    Storage.set("data_token_lvl", r.data.token);
+                    if (r.data.token != undefined) {
+                        Axios.defaults.headers.common['X-Access-Token-Lvl'] = Storage.get("data_token_lvl");
+                    } else {
+                        delete Axios.defaults.headers.common['X-Access-Token-Lvl'];
+                        console.log(["Laravel => Estimado usuario su sesion ha terminado, actualice su navegador"]);
+                    }
+                })
+                .catch((e) => {
+                    console.log(e.response);
+                    if (e.response == undefined) {
+                        console.log(["Laravel => Estimado usuario su sesion ha terminado, actualice su navegador"]);
+                    } else {
+                        console.log(["Laravel => " + e.response]);
+                    }
+                })
         },
         //SEARCH
         //Funcion buscar
@@ -92,7 +105,7 @@ const SERVICE = new Vuex.Store({
         },
         //Funcion traza para buscar
         createLogSearch({commit}, {self}) {
-            Axios.post(ENV.API_LUMEN + "/create-log-search", self.new_params)
+            Axios.post(ENV.API_LARAVEL + "/create-log-search", self.new_params)
                 .then((r) => {
                     if (r.status == 200) {
                         console.log(r.statusText);
@@ -149,7 +162,7 @@ const SERVICE = new Vuex.Store({
         },
         //Funcion traza para desbloquear
         createLogUnlock({commit}, {self}) {
-            Axios.post(ENV.API_LUMEN + "/create-log-unlock", self.newparams)
+            Axios.post(ENV.API_LARAVEL + "/create-log-unlock", self.newparams)
                 .then((r) => {
                     if (r.status === 200) {
                         Axios.get(ENV.API_NODE + "/unlockresetuser/search/" + self.subself.params.username)
@@ -206,18 +219,18 @@ const SERVICE = new Vuex.Store({
                     self.dataAlert = e.response;
                     console.error(e);
                 })
-                .finally(()=>{
+                .finally(() => {
                     self.new_params = {
                         username: self.params.username,
                         description: self.params.username + " reseteo su contraseña",
                         status: 1
                     };
-                    this.dispatch("createLogReset",{self:self})
+                    this.dispatch("createLogReset", {self: self})
                 })
         },
         //Funcion traza para reseteo
         createLogReset({commit}, {self}) {
-            Axios.post(ENV.API_LUMEN + "/create-log-reset", self.new_params)
+            Axios.post(ENV.API_LARAVEL + "/create-log-reset", self.new_params)
                 .then((r) => {
                     if (r.status === 200) {
                         console.log(r.statusText);
@@ -227,18 +240,57 @@ const SERVICE = new Vuex.Store({
                     console.log(e.response.statusText);
                 })
         },
-        acceptReceivedCode({commit}, {self}){
+        acceptReceivedCode({commit}, {self}) {
             Util.openLoadModal(self);
-            setTimeout(()=>{
-                Util.closeLoadModal(self);
-            },2500);
+            const new_params = {nameApp: "frontend", phone: "51" + Storage.get("data_user").phone_number};
+            Axios.post("http://192.167.99.246:8087/sms/f2a/pin", new_params)
+                .then((r) => {
+                    if (r.status === 200) {
+                        Util.closeLoadModal(self);
+                        self.dataAlert = {};
+                        Storage.set("data_api_sms", r.data);
+                        self.dataReset.showInfo = false;
+                        self.dataReset.showAccept = true;
+                    }
+                })
+                .catch((e) => {
+                    Util.closeLoadModal(self);
+                    console.error(e);
+                    self.dataAlert = e.response;
+                })
         },
-        sendReceivedCode({commit}, {self}){
+        sendReceivedCode({commit}, {self}) {
             Util.openLoadModal(self);
-            setTimeout(()=>{
-                Util.closeLoadModal(self);
-            },2500);
-        }
+            const new_params = {pinId: Storage.get("data_api_sms").pinId, pin: self.params.pin};
+            Axios.post("http://192.167.99.246:8087/sms/f2a/verify", new_params)
+                .then((r) => {
+                    if (r.status === 200) {
+                        Util.closeLoadModal(self);
+                        self.dataAlert = {};
+                        self.dataReset.showAccept = false;
+                        self.dataReset.showResetPwd = true;
+                    }
+                })
+                .catch((e) => {
+                    Util.closeLoadModal(self);
+                    console.error(e);
+                    self.dataAlert = e.response;
+                })
+                .finally(()=>{
+                    self.params.pin = "";
+                    self.$children[1].$refs.inputPin.focus();
+                })
+        },
+        //Funcion salir
+        exit({commit}, {self}) {
+            delete Axios.defaults.headers.common['x-access-token'];
+            delete Axios.defaults.headers.common['X-Access-Token-Lvl'];
+            Storage.remove("data_user");
+            Storage.remove("data_token_nodejs");
+            Storage.remove("data_token_lvl");
+            self.$router.replace("/");
+            console.log("All storage removed");
+        },
     }
 });
 

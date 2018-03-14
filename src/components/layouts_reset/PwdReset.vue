@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-4">
                     <label class="text-white">.</label>
-                    <button class="btn btn-danger btn-block"><i class="fa fa-close fa-fw"></i>Cancelar</button>
+                    <button class="btn btn-danger btn-block" @click="clickCancel()"><i class="fa fa-close fa-fw"></i>Cancelar</button>
                 </div>
             </div>
         </div>
@@ -153,6 +153,9 @@
                 //Ejecutar con modal carga
                 this.$emit("eventResetGeneratePwd", [this.params]);
             },
+            clickCancel() {
+                this.$emit("eventCancelResetPwd", [this.params]);
+            }
         }
     }
 </script>

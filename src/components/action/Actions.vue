@@ -8,8 +8,7 @@
                 <!--Alertas-->
                 <div class="row">
                     <div class="col-12">
-                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert"
-                                      @eventCloseNotify="dataAlert = {}"/>
+                        <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
                     </div>
                 </div>
                 <!--Informacion inicial-->
@@ -54,11 +53,11 @@
                     </div>
                 </div>
                 <!--Vista pasos para el reseteo-->
-                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset" @eventAcceptReceivedCode="acceptReceivedCode()"/>
+                <info-reset v-if="dataReset.showInfo" :data-reset="dataReset" @eventAcceptReceivedCode="acceptReceivedCode()" @eventCancelInfoReset="cancelInfoReset()"/>
                 <!--Vista enviar codigo de seguridad-->
-                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset" @eventSendReceivedCode="sendReceivedCode()"/>
+                <accept-reset v-if="dataReset.showAccept" :data-reset="dataReset, params" @eventSendReceivedCode="sendReceivedCode()" @eventCancelAcceptReset="cancelAcceptReset()" />
                 <!--Vista reseteo de contraseña-->
-                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset, params" @eventResetPwd="resetPwd()" @eventResetGeneratePwd="resetGeneratePwd()"/>
+                <pwd-reset v-if="dataReset.showResetPwd" :data-reset="dataReset, params" @eventResetPwd="resetPwd()" @eventResetGeneratePwd="resetGeneratePwd()" @eventCancelResetPwd="cancelResetPwd()" />
             </div>
             <div class="card-footer">
                 <div class="row">
@@ -84,7 +83,7 @@
 </template>
 
 <script>
-    import Storage from 'vue-local-storage'
+    import Storage from 'vue-local-storage';
     import SERVICE from "../../services/ApiService";
     import Util from '../../util';
     import MyTitle from "../../components/layouts/MyTitle";
@@ -112,21 +111,12 @@
         },
         data: () => ({
             isAdmin: false,
-            showAlertUnlockSuccess: undefined,
-            showAlertResetSuccess: undefined,
-            showReset: undefined,
-            showResetAccept: undefined,
-            showResetPwd: undefined,
-            showUnlockOption: false,
-            countClicked: 0,
-            dataClicked: [],
-            inputSecurity: "",
             showLoadingModal: false,
-            password_confirm: "",
             params: {
                 username: "",
                 password: "",
-                text_search: ""
+                text_search: "",
+                pin:"",
             },
             data: [],
             dataAlert: {},
@@ -135,12 +125,26 @@
                 showAccept: false,
                 showResetPwd: false,
             },
-            arrayPhones: [],
         }),
         created() {
             this.load();
         },
         methods: {
+            cancelInfoReset() {
+                this.dataReset.showInfo = false;
+                this.dataAlert = {};
+            },
+            cancelAcceptReset(){
+                this.dataReset.showAccept = false;
+                this.dataReset.showInfo = false;
+                this.dataAlert = {};
+            },
+            cancelResetPwd(){
+                this.dataReset.showInfo = false;
+                this.dataReset.showAccept = false;
+                this.dataReset.showResetPwd = false;
+                this.dataAlert = {};
+            },
             sendReceivedCode(){
                 SERVICE.dispatch("sendReceivedCode", {self: this});
             },
@@ -192,12 +196,6 @@
                 this.params.username = this.data.username;
                 SERVICE.dispatch("unlock", {self: this});
             },
-            //Funcion que simula un error
-            unlockdbl() {
-                this.dataClicked.push(this);
-                if (this.dataClicked.length >= 3) this.showUnlockOption = true;
-                this.showAlertUnlockSuccess = false;
-            },
             //Funcion que muestra la informacion de pasos para resetear una contraseña
             reset() {
                 this.validatePhone()
@@ -216,15 +214,12 @@
             //Funcion valida si tiene telefono en el AD para tomar una accion
             validatePhone() {
                 if (Storage.get("data_user").phone_number !== undefined) {
-                    this.arrayPhones = ["9******93", "9******32", "9******54"];
-                    // this.arrayPhones = ["997397243"];
-                    // let arrPhone = Storage.get("data_user").phone_number;
                     this.dataAlert = {};
                     this.dataReset.showInfo = true;
                 } else {
                     this.dataAlert = {
                         status: 412,
-                        data: "Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 405-7877."
+                        data: "Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 215-4530 opcion 444."
                     };
                 }
             },

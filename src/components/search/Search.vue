@@ -37,6 +37,7 @@
         }),
         created() {
             SERVICE.dispatch("generateTokenLDAP", {self: this});
+            SERVICE.dispatch("generateTokenLaravel", {self: this});
         },
         methods: {
             search() {
