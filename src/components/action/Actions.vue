@@ -83,152 +83,152 @@
 </template>
 
 <script>
-    import Storage from 'vue-local-storage';
-    import SERVICE from "../../services/ApiService";
-    import Util from '../../util';
-    import MyTitle from "../../components/layouts/MyTitle";
-    import AlertNotify from "../../components/layouts/AlertNotify";
-    import InfoReset from "../../components/layouts_reset/InfoReset";
-    import AcceptReset from "../../components/layouts_reset/AcceptReset";
-    import PwdReset from "../../components/layouts_reset/PwdReset";
-    import LoadModal from "../../components/layouts/LoadModal";
-    import FormSearch from "../layouts_search/FormSearch";
-    import ButtonReset from "../layouts_action/ButtonReset";
-    import ButtonUnlock from "../layouts_action/ButtonUnlock";
+import Storage from 'vue-local-storage'
+import SERVICE from "../../services/ApiService"
+import Util from '../../util'
+import MyTitle from "../../components/layouts/MyTitle"
+import AlertNotify from "../../components/layouts/AlertNotify"
+import InfoReset from "../../components/layouts_reset/InfoReset"
+import AcceptReset from "../../components/layouts_reset/AcceptReset"
+import PwdReset from "../../components/layouts_reset/PwdReset"
+import LoadModal from "../../components/layouts/LoadModal"
+import FormSearch from "../layouts_search/FormSearch"
+import ButtonReset from "../layouts_action/ButtonReset"
+import ButtonUnlock from "../layouts_action/ButtonUnlock"
 
-    export default {
-        name: "actions",
-        components: {
-            ButtonUnlock,
-            ButtonReset,
-            FormSearch,
-            AlertNotify,
-            MyTitle,
-            InfoReset,
-            AcceptReset,
-            PwdReset,
-            LoadModal
-        },
-        data: () => ({
-            isAdmin: false,
-            showLoadingModal: false,
-            params: {
-                username: "",
-                password: "",
-                text_search: "",
-                pin:"",
-            },
-            data: [],
-            dataAlert: {},
-            dataReset: {
-                showInfo: false,
-                showAccept: false,
-                showResetPwd: false,
-            },
-        }),
-        created() {
-            this.load();
-        },
-        methods: {
-            cancelInfoReset() {
-                this.dataReset.showInfo = false;
-                this.dataAlert = {};
-            },
-            cancelAcceptReset(){
-                this.dataReset.showAccept = false;
-                this.dataReset.showInfo = false;
-                this.dataAlert = {};
-            },
-            cancelResetPwd(){
-                this.dataReset.showInfo = false;
-                this.dataReset.showAccept = false;
-                this.dataReset.showResetPwd = false;
-                this.dataAlert = {};
-            },
-            sendReceivedCode(){
-                SERVICE.dispatch("sendReceivedCode", {self: this});
-            },
-            acceptReceivedCode(){
-                SERVICE.dispatch("acceptReceivedCode", {self: this});
-            },
-            //Funcion que autogenerar contraseña y resetear
-            resetGeneratePwd(){
-              alert("generate Pwd");
-            },
-            //Funcion resetear contraseña
-            resetPwd() {
-                this.params.username = this.data.username;
-                SERVICE.dispatch("reset", {self: this});
-            },
-            //Funcion para buscar texto
-            search() {
-                //Ocultar elementos activos
-                this.dataReset.showInfo = false;
-                this.dataReset.showAccept = false;
-                this.dataReset.showResetPwd = false;
-                this.openLoadModal();
-                this.params.username = this.data.username;
-                SERVICE.dispatch("researchText", {self: this});
-            },
-            //Funcion para remover la cache y salir del modulo de autogestion
-            exit() {
-                SERVICE.dispatch("exit", {self: this});
-            },
-            //Funcion que carga la informacion
-            load() {
-                this.openLoadModal();
-                this.data = Storage.get("data_user");
-                if (Object.keys(this.data).length > 0) {
-                    this.closeLoadModal();
-                }
-            },
-            //Funcion que muestra la carga por modal
-            openLoadModal() {
-                Util.openLoadModal(this);
-            },
-            //Funcion que oculta la carga por modal
-            closeLoadModal() {
-                Util.closeLoadModal(this);
-            },
-            //Funcion que envia por POST el desbloqueo de la cuenta
-            unlock() {
-                this.openLoadModal();
-                this.params.username = this.data.username;
-                SERVICE.dispatch("unlock", {self: this});
-            },
-            //Funcion que muestra la informacion de pasos para resetear una contraseña
-            reset() {
-                this.validatePhone()
-            },
-            //Funcion para reenviar codigo de seguridad
-            reSend() {
-                //ejecutar con modal carga
-                this.openLoadModal();
-                setTimeout(() => {
-                    this.closeLoadModal();
-                    this.showReset = undefined;
-                    this.showResetAccept = true;
-                    this.inputSecurity = "";
-                }, 5000)
-            },
-            //Funcion valida si tiene telefono en el AD para tomar una accion
-            validatePhone() {
-                if (Storage.get("data_user").phone_number !== undefined) {
-                    this.dataAlert = {};
-                    this.dataReset.showInfo = true;
-                } else {
-                    this.dataAlert = {
-                        status: 412,
-                        data: "Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 215-4530 opcion 444."
-                    };
-                }
-            },
-            //Funcion para cargar imagen
-            getImgUrl(img) {
-                return require('@/assets/vendor/img/' + img);
-            },
-        }
-    }
+export default {
+	name: "actions",
+	components: {
+		ButtonUnlock,
+		ButtonReset,
+		FormSearch,
+		AlertNotify,
+		MyTitle,
+		InfoReset,
+		AcceptReset,
+		PwdReset,
+		LoadModal
+	},
+	data: () => ({
+		isAdmin: false,
+		showLoadingModal: false,
+		params: {
+			username: "",
+			password: "",
+			text_search: "",
+			pin:"",
+		},
+		data: [],
+		dataAlert: {},
+		dataReset: {
+			showInfo: false,
+			showAccept: false,
+			showResetPwd: false,
+		},
+	}),
+	created() {
+		this.load()
+	},
+	methods: {
+		cancelInfoReset() {
+			this.dataReset.showInfo = false
+			this.dataAlert = {}
+		},
+		cancelAcceptReset(){
+			this.dataReset.showAccept = false
+			this.dataReset.showInfo = false
+			this.dataAlert = {}
+		},
+		cancelResetPwd(){
+			this.dataReset.showInfo = false
+			this.dataReset.showAccept = false
+			this.dataReset.showResetPwd = false
+			this.dataAlert = {}
+		},
+		sendReceivedCode(){
+			SERVICE.dispatch("sendReceivedCode", {self: this})
+		},
+		acceptReceivedCode(){
+			SERVICE.dispatch("acceptReceivedCode", {self: this})
+		},
+		//Funcion que autogenerar contraseña y resetear
+		resetGeneratePwd(){
+			alert("generate Pwd")
+		},
+		//Funcion resetear contraseña
+		resetPwd() {
+			this.params.username = this.data.username
+			SERVICE.dispatch("reset", {self: this})
+		},
+		//Funcion para buscar texto
+		search() {
+			//Ocultar elementos activos
+			this.dataReset.showInfo = false
+			this.dataReset.showAccept = false
+			this.dataReset.showResetPwd = false
+			this.openLoadModal()
+			this.params.username = this.data.username
+			SERVICE.dispatch("researchText", {self: this})
+		},
+		//Funcion para remover la cache y salir del modulo de autogestion
+		exit() {
+			SERVICE.dispatch("exit", {self: this})
+		},
+		//Funcion que carga la informacion
+		load() {
+			this.openLoadModal()
+			this.data = Storage.get("data_user")
+			if (Object.keys(this.data).length > 0) {
+				this.closeLoadModal()
+			}
+		},
+		//Funcion que muestra la carga por modal
+		openLoadModal() {
+			Util.openLoadModal(this)
+		},
+		//Funcion que oculta la carga por modal
+		closeLoadModal() {
+			Util.closeLoadModal(this)
+		},
+		//Funcion que envia por POST el desbloqueo de la cuenta
+		unlock() {
+			this.openLoadModal()
+			this.params.username = this.data.username
+			SERVICE.dispatch("unlock", {self: this})
+		},
+		//Funcion que muestra la informacion de pasos para resetear una contraseña
+		reset() {
+			this.validatePhone()
+		},
+		//Funcion para reenviar codigo de seguridad
+		reSend() {
+			//ejecutar con modal carga
+			this.openLoadModal()
+			setTimeout(() => {
+				this.closeLoadModal()
+				this.showReset = undefined
+				this.showResetAccept = true
+				this.inputSecurity = ""
+			}, 5000)
+		},
+		//Funcion valida si tiene telefono en el AD para tomar una accion
+		validatePhone() {
+			if (Storage.get("data_user").phone_number !== undefined) {
+				this.dataAlert = {}
+				this.dataReset.showInfo = true
+			} else {
+				this.dataAlert = {
+					status: 412,
+					data: "Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 215-4530 opcion 444."
+				}
+			}
+		},
+		//Funcion para cargar imagen
+		getImgUrl(img) {
+			return require('@/assets/vendor/img/' + img)
+		},
+	}
+}
 
 </script>
 

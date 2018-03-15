@@ -42,29 +42,29 @@
 </template>
 
 <script>
-    import Storage from 'vue-local-storage';
+import Storage from 'vue-local-storage'
 
-    export default {
-        name: "accept-reset",
-        props: {
-            dataReset: {},
-            params: {},
-        },
-        data: () => ({
-            inputSecurity: "",
-            storage: Storage,
-        }),
-        methods: {
-            //Funcion que envia por POST el codigo de seguridad
-            btnYesSecutity() {
-                this.$emit('eventSendReceivedCode')
-            },
-            //Funcion que cancela enviar por POST el codigo de seguridad
-            btnNotSecutity() {
-                this.$emit('eventCancelAcceptReset');
-            },
-        }
-    }
+export default {
+	name: "accept-reset",
+	props: {
+		dataReset: {},
+		params: {},
+	},
+	data: () => ({
+		inputSecurity: "",
+		storage: Storage,
+	}),
+	methods: {
+		//Funcion que envia por POST el codigo de seguridad
+		btnYesSecutity() {
+			this.$emit('eventSendReceivedCode')
+		},
+		//Funcion que cancela enviar por POST el codigo de seguridad
+		btnNotSecutity() {
+			this.$emit('eventCancelAcceptReset')
+		},
+	}
+}
 
 
 </script>

@@ -16,17 +16,17 @@
 </template>
 
 <script>
-    export default {
-        name: "form-search",
-        props: {
-            params: {},
-        },
-        methods: {
-            searchChild() {
-                this.$emit('listenSearch',this);
-            }
-        }
-    }
+export default {
+	name: "form-search",
+	props: {
+		params: {},
+	},
+	methods: {
+		searchChild() {
+			this.$emit('listenSearch',this)
+		}
+	}
+}
 </script>
 
 <style scoped>

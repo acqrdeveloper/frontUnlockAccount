@@ -6,14 +6,14 @@
 </template>
 
 <script>
-    export default {
-        name: "button-unlock",
-        methods:{
-            unlock(){
-                this.$emit("listenUnlock")
-            }
-        }
-    }
+export default {
+	name: "button-unlock",
+	methods:{
+		unlock(){
+			this.$emit("listenUnlock")
+		}
+	}
+}
 </script>
 
 <style scoped>

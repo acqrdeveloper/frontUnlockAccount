@@ -1,39 +1,32 @@
-/**
- * Created by aquispe on 20/02/2018.
- **/
-import Vue from 'vue';
-import Router from 'vue-router';
-import Storage from 'vue-local-storage';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Storage from 'vue-local-storage'
 
-import Actions from './components/action/Actions';
-import Search from './components/search/Search';
+import Actions from './components/action/Actions'
+import Search from './components/search/Search'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const router = new Router({
-    mode: 'history',
-    routes: [
-        //Reestructuracion para produccion
-        {path: "*", redirect: '/'},
-        {path: '/', name: 'search', component: Search},
-        {path: '/actions', name: 'actions', component: Actions, meta: {requiresAuth: true}},
-    ]
-});
+	mode: 'history',
+	routes: [
+		{path: "*", redirect: '/'},
+		{path: '/', name: 'search', component: Search},
+		{path: '/actions', name: 'actions', component: Actions, meta: {requiresAuth: true}},
+	]
+})
 
 router.beforeEach((to, from, next) => {
 
-    if (to.path === '/') {
-        Storage.remove("data_user");
-        console.log("Storage removed by route!");
-    }
+	if (to.path === '/') {
+		Storage.remove("data_user")
+		console.log("Storage removed by route!")
+	}
 
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    if (requiresAuth && Storage.get("data_user") === undefined) {
-        next('/');
-    } else {
-        next();
-    }
+	const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+	if (requiresAuth && Storage.get("data_user") === undefined) next('/')
+	else next()
 
-});
+})
 
-export default router;
+export default router
