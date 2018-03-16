@@ -1,6 +1,9 @@
 export default {
-	name_proyect: "interbank",
-	api_ldap: "http://restapi_ldapservice.sapia.pe:8090",
-	api_log: "http://restapi_logsunlockresetservice.sapia.pe",
-	api_sms: "http://restapi_smsservice.sapia.pe:8087"
+	name_proyect: process.env.VUE_APP_name_proyect,
+	api_ldap: process.env.VUE_APP_api_ldap,
+	api_log: process.env.VUE_APP_api_log,
+	api_sms: process.env.VUE_APP_api_sms
 }
+
+
+
