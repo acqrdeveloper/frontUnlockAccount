@@ -18,9 +18,9 @@
 </template>
 
 <script>
-    export default {
-        name: "load-modal",
-    }
+export default {
+	name: "load-modal",
+}
 </script>
 
 <style scoped>

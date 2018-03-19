@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-    export default {
-        name: "logo-sapia"
-    }
+export default {
+	name: "logo-sapia"
+}
 </script>

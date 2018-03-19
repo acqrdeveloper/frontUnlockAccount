@@ -24,27 +24,27 @@
 </template>
 
 <script>
-    import Storage from 'vue-local-storage';
-    export default {
-        name: "info-reset",
-        props: {
-            dataReset:{}
-        },
-        data:()=>({
-            phone_number_checked:"",
-            storage:Storage,
-        }),
-        methods:{
-            //Funcion que cancela el envio del codigo de seguridad
-            btnNot(){
-                this.$emit('eventCancelInfoReset')
-            },
-            //funcion que acepta obtener el codigo de seguridad por mensaje
-            btnYes(){
-                this.$emit('eventAcceptReceivedCode')
-            }
-        }
-    }
+import Storage from 'vue-local-storage'
+export default {
+	name: "info-reset",
+	props: {
+		dataReset:{}
+	},
+	data:()=>({
+		phone_number_checked:"",
+		storage:Storage,
+	}),
+	methods:{
+		//Funcion que cancela el envio del codigo de seguridad
+		btnNot(){
+			this.$emit('eventCancelInfoReset')
+		},
+		//funcion que acepta obtener el codigo de seguridad por mensaje
+		btnYes(){
+			this.$emit('eventAcceptReceivedCode')
+		}
+	}
+}
 </script>
 
 <style scoped>

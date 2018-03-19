@@ -96,20 +96,17 @@
 </template>
 
 <script>
-    import Storage from 'vue-local-storage'
-    import SERVICE from "../../services/ApiService";
-    import MyTitle from "../../components/layouts/MyTitle";
-    import AlertNotify from "../../components/layouts/AlertNotify";
-    import InfoReset from "../../components/layouts_reset/InfoReset";
-    import AcceptReset from "../../components/layouts_reset/AcceptReset";
-    import PwdReset from "../../components/layouts_reset/PwdReset";
-    import LoadModal from "../../components/layouts/LoadModal";
-    import Util from '../../util';
-    import Unlock from "../unlock/Unlock";
-    export default {
-        name: "reset",
-        components: {Unlock, AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
-    }
+import MyTitle from "../../components/layouts/MyTitle"
+import AlertNotify from "../../components/layouts/AlertNotify"
+import InfoReset from "../../components/layouts_reset/InfoReset"
+import AcceptReset from "../../components/layouts_reset/AcceptReset"
+import PwdReset from "../../components/layouts_reset/PwdReset"
+import LoadModal from "../../components/layouts/LoadModal"
+import Unlock from "../unlock/Unlock"
+export default {
+	name: "reset",
+	components: {Unlock, AlertNotify, MyTitle, InfoReset, AcceptReset, PwdReset, LoadModal},
+}
 </script>
 
 <style scoped>

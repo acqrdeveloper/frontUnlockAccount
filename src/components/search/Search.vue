@@ -17,34 +17,34 @@
 </template>
 
 <script>
-    import SERVICE from "../../services/ApiService";
-    import LogoSapia from './../layouts/LogoSapia';
-    import MyTitle from "../../components/layouts/MyTitle";
-    import AlertNotify from "../../components/layouts/AlertNotify";
-    import LoadModal from "../../components/layouts/LoadModal";
-    import FormSearch from "../layouts_search/FormSearch";
+import SERVICE from "../../services/ApiService"
+import LogoSapia from './../layouts/LogoSapia'
+import MyTitle from "../../components/layouts/MyTitle"
+import AlertNotify from "../../components/layouts/AlertNotify"
+import LoadModal from "../../components/layouts/LoadModal"
+import FormSearch from "../layouts_search/FormSearch"
 
-    export default {
-        name: "search",
-        components: {FormSearch, AlertNotify, MyTitle, LoadModal,LogoSapia},
-        data: () => ({
-            msg: undefined,
-            params: {
-                text_search: ""
-            },
-            dataAlert: {},
-            showLoadingModal: false,
-        }),
-        created() {
-            SERVICE.dispatch("generateTokenLDAP", {self: this});
-            SERVICE.dispatch("generateTokenLaravel", {self: this});
-        },
-        methods: {
-            search() {
-                SERVICE.dispatch("searchText", {self: this});
-            },
-        }
-    }
+export default {
+	name: "search",
+	components: {FormSearch, AlertNotify, MyTitle, LoadModal,LogoSapia},
+	data: () => ({
+		msg: undefined,
+		params: {
+			text_search: ""
+		},
+		dataAlert: {},
+		showLoadingModal: false,
+	}),
+	created() {
+		SERVICE.dispatch("generateTokenLDAP", {self: this})
+		SERVICE.dispatch("generateTokenLaravel", {self: this})
+	},
+	methods: {
+		search() {
+			SERVICE.dispatch("searchText", {self: this})
+		},
+	}
+}
 </script>
 
 <style scoped>
