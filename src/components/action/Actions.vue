@@ -41,12 +41,8 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false "
-                             class="row">
-                            <div v-if="isAdmin" class="col-6">
-                                <button-unlock @listenUnlock="unlock()"/>
-                            </div>
-                            <div :class="isAdmin ? 'col-6' : 'col-12'">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false " class="row">
+                            <div class="col-12">
                                 <button-reset @listenReset="reset()"/>
                             </div>
                         </div>
@@ -64,9 +60,7 @@
                     <div class="col-6"><!--if exist adminitrator--></div>
                     <div class="col-6">
                         <div class="row">
-                            <div class="col-9">
-                                <form-search v-if="isAdmin" :params="params" @listenSearch="search()"/>
-                            </div>
+                            <div class="col-9"></div>
                             <div class="col-3">
                                 <button class="btn btn-secondary btn-block" @click="exit()">
                                     <i class="fa fa-sign-out fa-fw"></i>
@@ -110,7 +104,6 @@ export default {
 		LoadModal
 	},
 	data: () => ({
-		isAdmin: false,
 		showLoadingModal: false,
 		params: {
 			username: "",
@@ -130,6 +123,7 @@ export default {
 		this.load()
 	},
 	methods: {
+        //Funciones ejecutadas desde su componente
 		cancelInfoReset() {
 			this.dataReset.showInfo = false
 			this.dataAlert = {}
@@ -166,7 +160,7 @@ export default {
 			this.dataReset.showInfo = false
 			this.dataReset.showAccept = false
 			this.dataReset.showResetPwd = false
-			this.openLoadModal()
+          Util.openLoadModal(this)
 			this.params.username = this.data.username
 			SERVICE.dispatch("researchText", {self: this})
 		},
@@ -176,40 +170,21 @@ export default {
 		},
 		//Funcion que carga la informacion
 		load() {
-			this.openLoadModal()
+          Util.openLoadModal(this)
 			this.data = Storage.get("data_user")
 			if (Object.keys(this.data).length > 0) {
-				this.closeLoadModal()
+              Util.closeLoadModal(this)
 			}
-		},
-		//Funcion que muestra la carga por modal
-		openLoadModal() {
-			Util.openLoadModal(this)
-		},
-		//Funcion que oculta la carga por modal
-		closeLoadModal() {
-			Util.closeLoadModal(this)
 		},
 		//Funcion que envia por POST el desbloqueo de la cuenta
 		unlock() {
-			this.openLoadModal()
+          Util.openLoadModal(this)
 			this.params.username = this.data.username
 			SERVICE.dispatch("unlock", {self: this})
 		},
 		//Funcion que muestra la informacion de pasos para resetear una contraseña
 		reset() {
 			this.validatePhone()
-		},
-		//Funcion para reenviar codigo de seguridad
-		reSend() {
-			//ejecutar con modal carga
-			this.openLoadModal()
-			setTimeout(() => {
-				this.closeLoadModal()
-				this.showReset = undefined
-				this.showResetAccept = true
-				this.inputSecurity = ""
-			}, 5000)
 		},
 		//Funcion valida si tiene telefono en el AD para tomar una accion
 		validatePhone() {

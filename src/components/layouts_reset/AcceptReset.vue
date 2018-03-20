@@ -51,7 +51,6 @@ export default {
 		params: {},
 	},
 	data: () => ({
-		inputSecurity: "",
 		storage: Storage,
 	}),
 	methods: {

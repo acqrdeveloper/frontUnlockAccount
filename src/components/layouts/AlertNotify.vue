@@ -22,16 +22,13 @@
 </template>
 
 <script>
-export default {
-	name: "alert-notify",
-	props: {dataAlert: {}},
-	data: () => ({}),
-	created() {
-	},
-	methods: {
-		close() {
-			this.$emit("eventCloseNotify", this)
-		}
-	}
-}
+  export default {
+    name: 'alert-notify',
+    props: {dataAlert: {}},
+    methods: {
+      close () {
+        this.$emit('eventCloseNotify', this)
+      }
+    }
+  }
 </script>
