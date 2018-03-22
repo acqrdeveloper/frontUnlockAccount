@@ -8,3 +8,8 @@ export default {
 	name: "logo-sapia"
 }
 </script>
+
+<html>
+<div>
+</div>
+</html>
