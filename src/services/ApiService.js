@@ -57,6 +57,7 @@ const SERVICE = new Vuex.Store({
 
     searchText ({commit}, {self}) {
       Util.openLoadModal(self)
+      self.new_params = {}
       Axios.get(env.api_ldap + '/api/unlockresetuser/search/' + self.params.text_search)
         .then(r => {
           if (r.status === 200) {
@@ -64,17 +65,22 @@ const SERVICE = new Vuex.Store({
             self.dataAlert = {}
             Storage.set('data_user', r.data)
             self.$router.replace('/actions')
+            self.new_params = {
+              description: 'Alguien buscó ' + self.params.text_search,
+              status: 1
+            }
           }
         })
         .catch(e => {
           Util.closeLoadModal(self)
           self.dataAlert = e.response
+          self.new_params = {
+            description: 'Alguien buscó ' + self.params.text_search,
+            message: e.response.data,
+            status: 0
+          }
         })
         .finally(() => {
-          self.new_params = {
-            description: 'Alguien busco ' + self.params.text_search + ' con éxito',
-            status: 1
-          }
           this.dispatch('createLogSearch', {self: self})
           if (self.$route.path == '/') {
             if (self.$children[2].$refs.inputSearch != undefined) {
@@ -124,6 +130,7 @@ const SERVICE = new Vuex.Store({
     },
 
     unlock ({commit}, {self}) {
+      self.new_params = {}
       Axios.get(env.api_ldap + '/api/unlockresetuser/unlock/' + self.params.username)
         .then(r => {
           if (r.status === 200) {
@@ -145,17 +152,21 @@ const SERVICE = new Vuex.Store({
                 self.$refs.inputSearch.focus()
               })
           }
+          self.new_params = {
+            description: self.params.username + ' realizó la accion de desbloquear su cuenta',
+            status: 1
+          }
         })
         .catch(e => {
           Util.closeLoadModal(self)
           self.dataAlert = e.response
-          console.log(e.response)
+          self.new_params = {
+            description: self.params.username + ' realizó la accion de desbloquear su cuenta',
+            message: e.response.data,
+            status: 0
+          }
         })
         .finally(() => {
-          self.new_params = {
-            description: self.params.username + ' desbloqueó su cuenta con éxito',
-            status: 1
-          }
           this.dispatch('createLogUnlock', {self: self})
         })
     },
@@ -172,6 +183,7 @@ const SERVICE = new Vuex.Store({
 
     reset ({commit}, {self}) {
       Util.openLoadModal(self)
+      self.new_params = {}
       Axios.post(env.api_ldap + '/api/unlockresetuser/resetpassword', self.params)
         .then(r => {
           if (r.status === 200) {
@@ -191,18 +203,22 @@ const SERVICE = new Vuex.Store({
                 Util.closeLoadModal(self)
                 self.dataAlert = e.response
               })
+            self.new_params = {
+              description: self.params.username + ' realizó la acción de resetear su contraseña',
+              status: 1
+            }
           }
         })
         .catch(e => {
           Util.closeLoadModal(self)
           self.dataAlert = e.response
-          console.log(e.response)
+          self.new_params = {
+            description: self.params.username + ' realizó la acción de resetear su contraseña',
+            message: e.response.data,
+            status: 0
+          }
         })
         .finally(() => {
-          self.new_params = {
-            description: self.params.username + ' reseteo su contraseña',
-            status: 1
-          }
           this.dispatch('createLogReset', {self: self})
         })
     },
