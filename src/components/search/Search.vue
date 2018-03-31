@@ -36,7 +36,7 @@ export default {
 		showLoadingModal: false,
 	}),
 	created() {
-		SERVICE.dispatch("generateTokenLDAP", {self: this})
+		// SERVICE.dispatch("generateTokenLDAP", {self: this})
 		SERVICE.dispatch("generateTokenLaravel", {self: this})
 	},
 	methods: {

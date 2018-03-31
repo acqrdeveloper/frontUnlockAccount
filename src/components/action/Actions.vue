@@ -29,15 +29,15 @@
                         <table class="table">
                             <tr>
                                 <th>Tiempo Bloq</th>
-                                <td>{{data.lockoutTime == undefined ? 'load...' : data.lockoutTime}}</td>
+                                <td>{{data.lockout_time == undefined ? 'load...' : data.lockout_time}}</td>
                                 <th>Cantidad Bloqs</th>
-                                <td>{{data.countLocked == undefined ? 'load...' : data.countLocked}}</td>
+                                <td>{{data.count_locked == undefined ? 'load...' : data.count_locked}}</td>
                             </tr>
                             <tr>
                                 <th>Area</th>
                                 <td>{{data.area_work == undefined ? 'load...' : data.area_work}}</td>
                                 <th>Ultima Sesion</th>
-                                <td>{{data.lastLogon == undefined ? 'load...' : data.lastLogon}}</td>
+                                <td>{{data.last_logon == undefined ? 'load...' : data.last_logon}}</td>
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
