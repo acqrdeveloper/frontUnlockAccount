@@ -15,7 +15,7 @@ const SERVICE = new Vuex.Store({
   actions: {
     // TOKENS - generar token para el servicio LDAP y Laravel
     generateTokenLDAP ({commit}, {self}) {
-      Axios.get(env.api_ldap + '/authtoken/generate')
+      Axios.get(env.api_log + '/authtoken/generate')
         .then(r => {
           Storage.set('data_token_nodejs', r.data.token);
           if (r.data.token != undefined) {
@@ -41,7 +41,6 @@ const SERVICE = new Vuex.Store({
           }
         })
     },
-
     generateTokenLaravel () {
       Axios.get(env.api_log + '/generate-token')
         .then(r => {
@@ -58,7 +57,7 @@ const SERVICE = new Vuex.Store({
     searchText ({commit}, {self}) {
       Util.openLoadModal(self);
       self.new_params = {};
-      Axios.get(env.api_log + '/api/unlockresetuser/search/' + self.params.text_search)
+      Axios.get(env.api_log + '/unlockresetuser/search/' + self.params.text_search)
         .then(r => {
           if (r.status === 200) {
             Util.closeLoadModal(self);
@@ -95,7 +94,6 @@ const SERVICE = new Vuex.Store({
           }
         })
     },
-
     createLogSearch ({commit}, {self}) {
       Axios.post(env.api_log + '/create-log-search', self.new_params)
         .then(r => {
@@ -107,10 +105,9 @@ const SERVICE = new Vuex.Store({
           console.log(e.response.statusText)
         })
     },
-
     researchText ({commit}, {self}) {
       Util.openLoadModal(self);
-      Axios.get(env.api_ldap + '/api/unlockresetuser/search/' + self.params.text_search)
+      Axios.get(env.api_log + '/unlockresetuser/search/' + self.params.text_search)
         .then(r => {
           if (r.status === 200) {
             Util.closeLoadModal(self);
@@ -131,10 +128,10 @@ const SERVICE = new Vuex.Store({
 
     unlock ({commit}, {self}) {
       self.new_params = {};
-      Axios.get(env.api_ldap + '/api/unlockresetuser/unlock/' + self.params.username)
+      Axios.get(env.api_log + '/unlockresetuser/unlock/' + self.params.username)
         .then(r => {
           if (r.status === 200) {
-            Axios.get(env.api_ldap + '/api/unlockresetuser/search/' + self.params.username)
+            Axios.get(env.api_log + '/api/unlockresetuser/search/' + self.params.username)
               .then(r => {
                 if (r.status === 200) {
                   Util.closeLoadModal(self);
@@ -170,7 +167,6 @@ const SERVICE = new Vuex.Store({
           this.dispatch('createLogUnlock', {self: self})
         })
     },
-
     createLogUnlock ({commit}, {self}) {
       Util.openLoadModal(self);
       Axios.post(env.api_log + '/create-log-unlock', self.new_params)
@@ -184,10 +180,10 @@ const SERVICE = new Vuex.Store({
     reset ({commit}, {self}) {
       Util.openLoadModal(self);
       self.new_params = {};
-      Axios.post(env.api_ldap + '/api/unlockresetuser/resetpassword', self.params)
+      Axios.post(env.api_log + '/unlockresetuser/resetpassword', self.params)
         .then(r => {
           if (r.status === 200) {
-            Axios.get(env.api_ldap + '/api/unlockresetuser/search/' + self.params.username)
+            Axios.get(env.api_log + '/api/unlockresetuser/search/' + self.params.username)
               .then((rpta) => {
                 if (rpta.status === 200) {
                   Util.closeLoadModal(self);
@@ -222,7 +218,6 @@ const SERVICE = new Vuex.Store({
           this.dispatch('createLogReset', {self: self})
         })
     },
-
     createLogReset ({commit}, {self}) {
       Axios.post(env.api_log + '/create-log-reset', self.new_params)
         .then(r => {
@@ -250,7 +245,6 @@ const SERVICE = new Vuex.Store({
           self.dataAlert = e.response
         })
     },
-
     sendReceivedCode ({commit}, {self}) {
       Util.openLoadModal(self);
       const new_params = {pinId: Storage.get('data_api_sms').pinId, pin: self.params.pin};

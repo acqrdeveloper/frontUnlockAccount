@@ -23,21 +23,21 @@
                         <table class="table mb-0">
                             <tr>
                                 <th width="25%">Nombres Completos</th>
-                                <td width="75%">{{data.name_complet == undefined ? 'load...' : data.name_complet}}</td>
+                                <td width="75%">{{data.name == undefined ? 'load...' : data.name}}</td>
                             </tr>
                         </table>
                         <table class="table">
                             <tr>
                                 <th>Tiempo Bloq</th>
-                                <td>{{data.lockout_time == undefined ? 'load...' : data.lockout_time}}</td>
+                                <td>{{data.time_locked == undefined ? 'load...' : data.time_locked}}</td>
                                 <th>Cantidad Bloqs</th>
-                                <td>{{data.count_locked == undefined ? 'load...' : data.count_locked}}</td>
+                                <td>{{data.quantity_locked == undefined ? 'load...' : data.quantity_locked}}</td>
                             </tr>
                             <tr>
                                 <th>Area</th>
-                                <td>{{data.area_work == undefined ? 'load...' : data.area_work}}</td>
+                                <td>{{data.area == undefined ? 'load...' : data.area}}</td>
                                 <th>Ultima Sesion</th>
-                                <td>{{data.last_logon == undefined ? 'load...' : data.last_logon}}</td>
+                                <td>{{data.last_session == undefined ? 'load...' : data.last_session}}</td>
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
@@ -125,18 +125,18 @@ export default {
 	methods: {
         //Funciones ejecutadas desde su componente
 		cancelInfoReset() {
-			this.dataReset.showInfo = false
+			this.dataReset.showInfo = false;
 			this.dataAlert = {}
 		},
 		cancelAcceptReset(){
-			this.dataReset.showAccept = false
-			this.dataReset.showInfo = false
+			this.dataReset.showAccept = false;
+			this.dataReset.showInfo = false;
 			this.dataAlert = {}
 		},
 		cancelResetPwd(){
-			this.dataReset.showInfo = false
-			this.dataReset.showAccept = false
-			this.dataReset.showResetPwd = false
+			this.dataReset.showInfo = false;
+			this.dataReset.showAccept = false;
+			this.dataReset.showResetPwd = false;
 			this.dataAlert = {}
 		},
 		sendReceivedCode(){
@@ -151,17 +151,17 @@ export default {
 		},
 		//Funcion resetear contraseña
 		resetPwd() {
-			this.params.username = this.data.username
+			this.params.username = this.data.username;
 			SERVICE.dispatch("reset", {self: this})
 		},
 		//Funcion para buscar texto
 		search() {
 			//Ocultar elementos activos
-			this.dataReset.showInfo = false
-			this.dataReset.showAccept = false
-			this.dataReset.showResetPwd = false
-          Util.openLoadModal(this)
-			this.params.username = this.data.username
+			this.dataReset.showInfo = false;
+			this.dataReset.showAccept = false;
+			this.dataReset.showResetPwd = false;
+          Util.openLoadModal(this);
+			this.params.username = this.data.username;
 			SERVICE.dispatch("researchText", {self: this})
 		},
 		//Funcion para remover la cache y salir del modulo de autogestion
@@ -170,16 +170,16 @@ export default {
 		},
 		//Funcion que carga la informacion
 		load() {
-          Util.openLoadModal(this)
-			this.data = Storage.get("data_user")
+          Util.openLoadModal(this);
+			this.data = Storage.get("data_user");
 			if (Object.keys(this.data).length > 0) {
               Util.closeLoadModal(this)
 			}
 		},
 		//Funcion que envia por POST el desbloqueo de la cuenta
 		unlock() {
-          Util.openLoadModal(this)
-			this.params.username = this.data.username
+          Util.openLoadModal(this);
+			this.params.username = this.data.username;
 			SERVICE.dispatch("unlock", {self: this})
 		},
 		//Funcion que muestra la informacion de pasos para resetear una contraseña
@@ -189,7 +189,7 @@ export default {
 		//Funcion valida si tiene telefono en el AD para tomar una accion
 		validatePhone() {
 			if (Storage.get("data_user").phone_number !== undefined) {
-				this.dataAlert = {}
+				this.dataAlert = {};
 				this.dataReset.showInfo = true
 			} else {
 				this.dataAlert = {
