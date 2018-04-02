@@ -4,7 +4,7 @@ import Storage from 'vue-local-storage'
 import Actions from './components/action/Actions'
 import Search from './components/search/Search'
 
-Vue.use(Router);
+Vue.use(Router,Storage);
 
 const router = new Router({
 	mode: 'history',
@@ -18,6 +18,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
 
 	if (to.path === '/') {
+		Storage.remove('data_token');
 		Storage.remove('data_user');
 		console.log('Storage removed by route!')
 	}
