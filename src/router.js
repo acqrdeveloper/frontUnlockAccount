@@ -20,7 +20,6 @@ router.beforeEach((to, from, next) => {
 	if (to.path === '/') {
 		Storage.remove('data_token');
 		Storage.remove('data_user');
-		console.log('Storage removed by route!')
 	}
 
 	const requiresAuth = to.matched.some(record => record.meta.requiresAuth);

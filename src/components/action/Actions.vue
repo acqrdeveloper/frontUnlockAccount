@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <div>
         <div class="card mt-5">
             <div class="card-header mt-auto mb-auto">
                 <my-title/>
@@ -25,8 +25,7 @@
                         <table class="table mb-0">
                             <tr>
                                 <th width="25%" style="border-top: 0;">Nombres Completos</th>
-                                <td width="75%" style="border-top: 0;">{{data.name == undefined ? 'load...' :
-                                    data.name}}
+                                <td width="75%" style="border-top: 0;">{{data.name == undefined ? 'load...' : data.name}}
                                 </td>
                             </tr>
                         </table>
@@ -45,8 +44,7 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false"
-                             class="row">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false" class="row">
                             <div class="col-6">
                                 <button-unlock @listenUnlock="unlock()"/>
                             </div>
@@ -76,7 +74,6 @@
                     <div class="col-8">
                         <div class="row">
                             <div class="col-9">
-                                <!--is admin-->
                                 <form-search :params="params" @listenSearch="search"/>
                             </div>
                             <div class="col-3">
@@ -91,7 +88,7 @@
             </div>
         </div>
         <load-modal v-if="showLoadingModal"/>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -119,7 +116,7 @@
       InfoReset,
       AcceptReset,
       PwdReset,
-      LoadModal
+      LoadModal,
     },
     data: () => ({
       showLoadingModal: false,
@@ -138,7 +135,7 @@
       },
       validation: {
         btn_reset: false,
-      }
+      },
     }),
     created () {
       this.load()
@@ -212,7 +209,7 @@
         } else {
           this.dataAlert = {
             status: 412,
-            data: 'Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 215-4530 opcion 444.'
+            data: 'Usted no cuenta con un numero disponible, porfavor comuniquese a mesa de ayuda al 215-4530 opcion 444.',
           }
         }
       },
@@ -220,7 +217,7 @@
       getImgUrl (img) {
         return require('@/assets/vendor/img/' + img)
       },
-    }
+    },
   }
 </script>
 
