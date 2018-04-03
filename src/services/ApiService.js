@@ -8,7 +8,7 @@ import env from './../env'
 
 Vue.use(Vuex)
 Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-Axios.defaults.headers.common['X-Request-Project'] = env.name_proyect
+Axios.defaults.headers.common['X-Request-Project'] = "interbank"
 Axios.defaults.headers.common['X-Access-Token'] = Storage.get('data_token')
 
 const SERVICE = new Vuex.Store({
@@ -17,15 +17,16 @@ const SERVICE = new Vuex.Store({
       Axios.get(env.api_log + '/generate-token').then(r => {
         Storage.set('data_token', r.data.token)
         if (r.data.token != undefined) {
-          Axios.defaults.headers.common['X-Access-Token'] = Storage.get(
-              'data_token')
+          Axios.defaults.headers.common['X-Access-Token'] = Storage.get('data_token')
         } else {
           delete Axios.defaults.headers.common['X-Access-Token']
         }
       }).catch(e => {
-        if (e.response == undefined) console.log(
-            ['Laravel => Estimado usuario su sesion ha terminado, actualice su navegador'])
-        else console.log(['Laravel => ' + e.response])
+        if (e.response == undefined) {
+          console.log(['Laravel => Estimado usuario su sesion ha terminado, actualice su navegador'])
+        } else {
+          console.log(['Laravel => ' + e.response])
+        }
       })
     },
 
@@ -47,7 +48,7 @@ const SERVICE = new Vuex.Store({
       Util.openLoadModal(self)
       self.new_params = {}
       Axios.get(env.api_log + '/active-directory/search',
-          {params: self.params}).then(r => {
+        {params: self.params}).then(r => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
           self.dataAlert = {}
@@ -82,20 +83,18 @@ const SERVICE = new Vuex.Store({
       })
     },
     createLogSearch ({commit}, {self}) {
-      Axios.post(env.api_log + '/create-log-search', self.new_params).
-          then(r => {
-            if (r.status == 200) {
-              console.log(r.statusText)
-            }
-          }).
-          catch(e => {
-            console.log(e.response.statusText)
-          })
+      Axios.post(env.api_log + '/create-log-search', self.new_params).then(r => {
+        if (r.status == 200) {
+          console.log(r.statusText)
+        }
+      }).catch(e => {
+        console.log(e.response.statusText)
+      })
     },
     researchText ({commit}, {self}) {
       Util.openLoadModal(self)
       Axios.get(env.api_log + '/active-directory/search',
-          {params: self.params}).then(r => {
+        {params: self.params}).then(r => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
           self.dataAlert = {}
@@ -126,12 +125,12 @@ const SERVICE = new Vuex.Store({
       Util.openLoadModal(self)
       self.new_params = {}
       Axios.get(env.api_log + '/active-directory/unlock',
-          {params: self.params}).then(r => {
+        {params: self.params}).then(r => {
         if (r.status === 200) {
           let msg = r
           self.params.text_search = self.params.username
           Axios.get(env.api_log + '/active-directory/search',
-              {params: self.params}).then(r => {
+            {params: self.params}).then(r => {
             if (r.status === 200) {
               Util.closeLoadModal(self)
               self.dataAlert = msg
@@ -165,57 +164,52 @@ const SERVICE = new Vuex.Store({
       })
     },
     createLogUnlock ({commit}, {self}) {
-      Axios.post(env.api_log + '/create-log-unlock', self.new_params).
-          then(r => {
-            if (r.status === 200) console.log(r.statusText)
-          }).
-          catch(e => console.log(e.response.statusText))
+      Axios.post(env.api_log + '/create-log-unlock', self.new_params).then(r => {
+        if (r.status === 200) console.log(r.statusText)
+      }).catch(e => console.log(e.response.statusText))
 
     },
 
     reset ({commit}, {self}) {
       Util.openLoadModal(self)
       self.new_params = {}
-      Axios.post(env.api_log + '/unlockresetuser/resetpassword', self.params).
-          then(r => {
-            if (r.status === 200) {
-              Axios.get(env.api_log + '/unlockresetuser/search/' +
-                  self.params.username).then((rpta) => {
-                if (rpta.status === 200) {
-                  Util.closeLoadModal(self)
-                  self.dataAlert = r
-                  Storage.set('data_user', rpta.data)
-                  self.data = Storage.get('data_user')
-                  self.dataReset.showInfo = false
-                  self.dataReset.showAccept = false
-                  self.dataReset.showResetPwd = false
-                }
-              }).catch(e => {
-                Util.closeLoadModal(self)
-                self.dataAlert = e.response
-              })
-              self.new_params = {
-                username: self.params.username,
-                description: self.params.username +
-                ' realizó la acción de resetear su contraseña',
-                status: 1,
-              }
+      Axios.post(env.api_log + '/unlockresetuser/resetpassword', self.params).then(r => {
+        if (r.status === 200) {
+          Axios.get(env.api_log + '/unlockresetuser/search/' +
+            self.params.username).then((rpta) => {
+            if (rpta.status === 200) {
+              Util.closeLoadModal(self)
+              self.dataAlert = r
+              Storage.set('data_user', rpta.data)
+              self.data = Storage.get('data_user')
+              self.dataReset.showInfo = false
+              self.dataReset.showAccept = false
+              self.dataReset.showResetPwd = false
             }
-          }).
-          catch(e => {
+          }).catch(e => {
             Util.closeLoadModal(self)
             self.dataAlert = e.response
-            self.new_params = {
-              username: self.params.username,
-              description: self.params.username +
-              ' realizó la acción de resetear su contraseña',
-              message: e.response.data,
-              status: 0,
-            }
-          }).
-          finally(() => {
-            this.dispatch('createLogReset', {self: self})
           })
+          self.new_params = {
+            username: self.params.username,
+            description: self.params.username +
+            ' realizó la acción de resetear su contraseña',
+            status: 1,
+          }
+        }
+      }).catch(e => {
+        Util.closeLoadModal(self)
+        self.dataAlert = e.response
+        self.new_params = {
+          username: self.params.username,
+          description: self.params.username +
+          ' realizó la acción de resetear su contraseña',
+          message: e.response.data,
+          status: 0,
+        }
+      }).finally(() => {
+        this.dispatch('createLogReset', {self: self})
+      })
     },
     createLogReset ({commit}, {self}) {
       Axios.post(env.api_log + '/create-log-reset', self.new_params).then(r => {

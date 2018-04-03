@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Storage from 'vue-local-storage'
-import Actions from './components/action/Actions'
-import Search from './components/search/Search'
+import Actions from '@/components/action/Actions'
+import Search from '@/components/search/Search'
 
 Vue.use(Router,Storage);
 
