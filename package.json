@@ -15,6 +15,7 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "moment": "^2.19.1",
+    "password-validator": "^4.0.0",
     "popper.js": "^1.12.9",
     "vue": "^2.5.13",
     "vue-local-storage": "^0.1.3",
