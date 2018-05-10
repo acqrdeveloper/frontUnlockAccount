@@ -62,7 +62,7 @@ export default new Vuex.Store({
             status: 1,
           }
         }
-      }).catch(e => {
+      }).catch((e) => {
         Util.closeLoadModal(self)
         self.dataAlert = e.response
         self.new_params = {
@@ -92,7 +92,7 @@ export default new Vuex.Store({
           console.log(r.statusText)
         }
       }).
-      catch(e => {
+      catch((e) => {
         console.log(e.response.statusText)
       })
     },
@@ -110,7 +110,7 @@ export default new Vuex.Store({
             status: 1,
           }
         }
-      }).catch(e => {
+      }).catch((e) => {
         Util.closeLoadModal(self)
         self.dataAlert = e.response
         self.new_params = {
@@ -152,7 +152,7 @@ export default new Vuex.Store({
             status: 1,
           }
         }
-      }).catch(e => {
+      }).catch((e) => {
         Util.closeLoadModal(self)
         self.dataAlert = e.response
         self.new_params = {
@@ -195,7 +195,7 @@ export default new Vuex.Store({
               self.dataReset.showAccept = false
               self.dataReset.showResetPwd = false
             }
-          }).catch(e => {
+          }).catch((e) => {
             Util.closeLoadModal(self)
             self.dataAlert = e.response
           })
@@ -206,7 +206,7 @@ export default new Vuex.Store({
           }
         }
       }).
-      catch(e => {
+      catch((e) => {
         Util.closeLoadModal(self)
         self.dataAlert = e.response
         self.new_params = {
@@ -226,7 +226,7 @@ export default new Vuex.Store({
       then(r => {
         if (r.status === 200) console.log(r.statusText)
       }).
-      catch(e => {
+      catch((e) => {
         console.log(e.response.statusText)
       })
     },
@@ -245,7 +245,7 @@ export default new Vuex.Store({
           self.dataReset.showInfo = false
           self.dataReset.showAccept = true
         }
-      }).catch(e => {
+      }).catch((e) => {
         Util.closeLoadModal(self)
         console.log(e)
         self.dataAlert = e.response
@@ -264,7 +264,7 @@ export default new Vuex.Store({
           self.dataReset.showAccept = false
           self.dataReset.showResetPwd = true
         }
-      }).catch(e => {
+      }).catch((e) => {
         Util.closeLoadModal(self)
         console.error(e.response)
         self.dataAlert = e.response
