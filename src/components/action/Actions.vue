@@ -217,7 +217,7 @@
       },
       //Funcion para cargar imagen
       getImgUrl(img) {
-        return require('@/assets/vendor/img/' + img)
+        return require('@/assets/img/' + img)
       },
     },
   }
