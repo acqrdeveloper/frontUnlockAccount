@@ -1,3 +1,3 @@
 export default {
-	API_LARAVEL: "http://service.apis.resetunlock.sapia.pe/api",
+	API_LARAVEL: "http://service-apisrest-resetunlock.sapia.pe/api",
 }
