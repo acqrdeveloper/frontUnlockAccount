@@ -63,8 +63,7 @@
                 </div>
                 <div class="col-4">
                     <label class="text-white">.</label>
-                    <button class="btn btn-danger btn-block" @click="clickCancel()"><i class="fa fa-close fa-fw"></i>Cancelar
-                    </button>
+                    <button class="btn btn-danger btn-block" @click="clickCancel()"><i class="fa fa-close fa-fw"></i>Cancelar</button>
                 </div>
             </div>
         </div>
@@ -85,12 +84,12 @@
       password_confirm: '',
       dataRulesPwd: {},
     }),
-    created () {
+    created() {
       this.dataRulesPwd = this.pwdValidator(this.params.password)
     },
     methods: {
       //Funcion reglas para la libreria Pwd
-      getRulesPwd () {
+      getRulesPwd() {
         return {
           min: 7,
           max: 15,
@@ -102,7 +101,7 @@
         }
       },
       //Funcion usar libreria
-      pwdValidator (password) {
+      pwdValidator(password) {
 
         const schema = new PasswordValidator()
         const validate = this.getRulesPwd()
@@ -147,22 +146,22 @@
         return this.dataRulesPwd = restrictions
       },
       //Funcion que confirma la validacion de contraseñas
-      validateConfirmPwd () {
+      validateConfirmPwd() {
         return (this.params.password !== '' && this.password_confirm !== '') ? (this.params.password ===
           this.password_confirm) ? false : true : true
       },
       //Funcion que envia por POST las contraseña nueva confirmada (evento master en padre)
-      resetPwd () {
+      resetPwd() {
         //Ejecutar con modal carga
         this.$emit('eventResetPwd', [this.params])
       },
       //Funcion que autogenera la contraseña (evento master en padre)
-      resetGeneratePwd () {
+      resetGeneratePwd() {
 //Ejecutar con modal carga
         this.$emit('eventResetGeneratePwd', [this.params])
       },
       //Funcion click cancelar del hijo al padre
-      clickCancel () {
+      clickCancel() {
         this.$emit('eventCancelResetPwd', [this.params])
       },
     },

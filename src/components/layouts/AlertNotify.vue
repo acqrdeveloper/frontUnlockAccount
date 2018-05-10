@@ -26,9 +26,9 @@
     name: 'alert-notify',
     props: {dataAlert: {}},
     methods: {
-      close () {
+      close() {
         this.$emit('eventCloseNotify', this)
-      }
-    }
+      },
+    },
   }
 </script>

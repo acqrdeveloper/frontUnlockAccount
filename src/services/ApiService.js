@@ -1,27 +1,28 @@
 /* eslint-disable no-unused-vars */
-import Vue from 'vue'
-import Axios from 'axios'
+import Vue       from 'vue'
+import Axios     from 'axios'
 import * as Vuex from 'vuex'
-import Storage from 'vue-local-storage'
-import Util from './../util'
-import env from './../env'
+import Storage   from 'vue-local-storage'
+import Util      from './../util'
+import Env       from './../env'
 
 Vue.use(Vuex)
+
 Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-Axios.defaults.headers.common['X-Request-Project'] = "interbank"
+Axios.defaults.headers.common['X-Request-Project'] = 'interbank'
 Axios.defaults.headers.common['X-Access-Token'] = Storage.get('data_token')
 
-const SERVICE = new Vuex.Store({
+export default new Vuex.Store({
   actions: {
-    generateTokenLaravel () {
-      Axios.get(env.api_log + '/generate-token').then(r => {
+    generateTokenLaravel() {
+      Axios.get(Env.API_LARAVEL + '/generate-token').then(r => {
         Storage.set('data_token', r.data.token)
         if (r.data.token != undefined) {
           Axios.defaults.headers.common['X-Access-Token'] = Storage.get('data_token')
         } else {
           delete Axios.defaults.headers.common['X-Access-Token']
         }
-      }).catch(e => {
+      }).catch((e) => {
         if (e.response == undefined) {
           console.log(['Laravel => Estimado usuario su sesion ha terminado, actualice su navegador'])
         } else {
@@ -30,24 +31,26 @@ const SERVICE = new Vuex.Store({
       })
     },
 
-    validateReset ({commit}, {self}) {
+    validateReset({commit}, {self}) {
       Util.openLoadModal(self)
-      Axios.get(env.api_log + '/active-directory/validate-reset').then((r) => {
+      Axios.get(Env.API_LARAVEL + '/active-directory/validate-reset').
+      then((r) => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
           self.dataAlert = {}
           if (r.data) self.validatePhone()
         }
-      }).catch((e) => {
+      }).
+      catch((e) => {
         Util.closeLoadModal(self)
         self.dataAlert = e.response
       })
     },
 
-    searchText ({commit}, {self}) {
+    searchText({commit}, {self}) {
       Util.openLoadModal(self)
       self.new_params = {}
-      Axios.get(env.api_log + '/active-directory/search',
+      Axios.get(Env.API_LARAVEL + '/active-directory/search',
         {params: self.params}).then(r => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
@@ -82,18 +85,20 @@ const SERVICE = new Vuex.Store({
         }
       })
     },
-    createLogSearch ({commit}, {self}) {
-      Axios.post(env.api_log + '/create-log-search', self.new_params).then(r => {
+    createLogSearch({commit}, {self}) {
+      Axios.post(Env.API_LARAVEL + '/create-log-search', self.new_params).
+      then(r => {
         if (r.status == 200) {
           console.log(r.statusText)
         }
-      }).catch(e => {
+      }).
+      catch(e => {
         console.log(e.response.statusText)
       })
     },
-    researchText ({commit}, {self}) {
+    researchText({commit}, {self}) {
       Util.openLoadModal(self)
-      Axios.get(env.api_log + '/active-directory/search',
+      Axios.get(Env.API_LARAVEL + '/active-directory/search',
         {params: self.params}).then(r => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
@@ -121,15 +126,15 @@ const SERVICE = new Vuex.Store({
       })
     },
 
-    unlock ({commit}, {self}) {
+    unlock({commit}, {self}) {
       Util.openLoadModal(self)
       self.new_params = {}
-      Axios.get(env.api_log + '/active-directory/unlock',
+      Axios.get(Env.API_LARAVEL + '/active-directory/unlock',
         {params: self.params}).then(r => {
         if (r.status === 200) {
           let msg = r
           self.params.text_search = self.params.username
-          Axios.get(env.api_log + '/active-directory/search',
+          Axios.get(Env.API_LARAVEL + '/active-directory/search',
             {params: self.params}).then(r => {
             if (r.status === 200) {
               Util.closeLoadModal(self)
@@ -137,14 +142,13 @@ const SERVICE = new Vuex.Store({
               Storage.set('data_user', r.data)
               self.data = Storage.get('data_user')
             }
-          }).catch(e => {
+          }).catch((e) => {
             Util.closeLoadModal(self)
             self.dataAlert = e.response
           })
           self.new_params = {
             username: self.params.username,
-            description: self.params.username +
-            ' realizó la accion de desbloquear su cuenta',
+            description: self.params.username + ' realizó la accion de desbloquear su cuenta',
             status: 1,
           }
         }
@@ -153,8 +157,7 @@ const SERVICE = new Vuex.Store({
         self.dataAlert = e.response
         self.new_params = {
           username: self.params.username,
-          description: self.params.username +
-          ' realizó la accion de desbloquear su cuenta',
+          description: self.params.username + ' realizó la accion de desbloquear su cuenta',
           message: e.response.data,
           status: 0,
         }
@@ -163,19 +166,25 @@ const SERVICE = new Vuex.Store({
         self.params.text_search = ''
       })
     },
-    createLogUnlock ({commit}, {self}) {
-      Axios.post(env.api_log + '/create-log-unlock', self.new_params).then(r => {
+    createLogUnlock({commit}, {self}) {
+      Axios.post(Env.API_LARAVEL + '/create-log-unlock', self.new_params).
+      then(r => {
         if (r.status === 200) console.log(r.statusText)
-      }).catch(e => console.log(e.response.statusText))
+      }).
+      catch((e) => {
+        console.log(e.response.statusText)
+      })
 
     },
 
-    reset ({commit}, {self}) {
+    reset({commit}, {self}) {
       Util.openLoadModal(self)
       self.new_params = {}
-      Axios.post(env.api_log + '/unlockresetuser/resetpassword', self.params).then(r => {
+      Axios.post(Env.API_LARAVEL + '/unlockresetuser/resetpassword',
+        self.params).
+      then(r => {
         if (r.status === 200) {
-          Axios.get(env.api_log + '/unlockresetuser/search/' +
+          Axios.get(Env.API_LARAVEL + '/unlockresetuser/search/' +
             self.params.username).then((rpta) => {
             if (rpta.status === 200) {
               Util.closeLoadModal(self)
@@ -192,12 +201,12 @@ const SERVICE = new Vuex.Store({
           })
           self.new_params = {
             username: self.params.username,
-            description: self.params.username +
-            ' realizó la acción de resetear su contraseña',
+            description: self.params.username + ' realizó la acción de resetear su contraseña',
             status: 1,
           }
         }
-      }).catch(e => {
+      }).
+      catch(e => {
         Util.closeLoadModal(self)
         self.dataAlert = e.response
         self.new_params = {
@@ -207,23 +216,28 @@ const SERVICE = new Vuex.Store({
           message: e.response.data,
           status: 0,
         }
-      }).finally(() => {
+      }).
+      finally(() => {
         this.dispatch('createLogReset', {self: self})
       })
     },
-    createLogReset ({commit}, {self}) {
-      Axios.post(env.api_log + '/create-log-reset', self.new_params).then(r => {
+    createLogReset({commit}, {self}) {
+      Axios.post(Env.API_LARAVEL + '/create-log-reset', self.new_params).
+      then(r => {
         if (r.status === 200) console.log(r.statusText)
-      }).catch(e => console.log(e.response.statusText))
+      }).
+      catch(e => {
+        console.log(e.response.statusText)
+      })
     },
 
-    acceptReceivedCode ({commit}, {self}) {
+    acceptReceivedCode({commit}, {self}) {
       Util.openLoadModal(self)
       const new_params = {
         nameApp: 'ApiCorporacionSapia',
         phone: '51' + Storage.get('data_user').phone_number,
       }
-      Axios.post(env.api_sms + '/sms/f2a/pin', new_params).then(r => {
+      Axios.post(Env.api_sms + '/sms/f2a/pin', new_params).then(r => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
           self.dataAlert = {}
@@ -237,13 +251,13 @@ const SERVICE = new Vuex.Store({
         self.dataAlert = e.response
       })
     },
-    sendReceivedCode ({commit}, {self}) {
+    sendReceivedCode({commit}, {self}) {
       Util.openLoadModal(self)
       const new_params = {
         pinId: Storage.get('data_api_sms').pinId,
         pin: self.params.pin,
       }
-      Axios.post(env.api_sms + '/sms/f2a/verify', new_params).then(r => {
+      Axios.post(Env.api_sms + '/sms/f2a/verify', new_params).then(r => {
         if (r.status === 200) {
           Util.closeLoadModal(self)
           self.dataAlert = {}
@@ -260,7 +274,7 @@ const SERVICE = new Vuex.Store({
       })
     },
 
-    exit ({commit}, {self}) {
+    exit({commit}, {self}) {
       delete Axios.defaults.headers.common['X-Access-Token']
       Storage.remove('data_token')
       Storage.remove('data_user')
@@ -268,5 +282,3 @@ const SERVICE = new Vuex.Store({
     },
   },
 })
-
-export default SERVICE

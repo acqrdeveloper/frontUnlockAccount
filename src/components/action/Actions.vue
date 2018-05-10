@@ -25,7 +25,8 @@
                         <table class="table mb-0">
                             <tr>
                                 <th width="25%" style="border-top: 0;">Nombres Completos</th>
-                                <td width="75%" style="border-top: 0;">{{data.name == undefined ? 'load...' : data.name}}
+                                <td width="75%" style="border-top: 0;">{{data.name == undefined ? 'load...' :
+                                    data.name}}
                                 </td>
                             </tr>
                         </table>
@@ -44,7 +45,8 @@
                             </tr>
                         </table>
                         <!--Acciones del negocio-->
-                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false" class="row">
+                        <div v-if="dataReset.showInfo === false && dataReset.showAccept === false && dataReset.showResetPwd === false"
+                             class="row">
                             <div class="col-6">
                                 <button-unlock @listenUnlock="unlock()"/>
                             </div>
@@ -92,17 +94,17 @@
 </template>
 
 <script>
-  import Storage from 'vue-local-storage'
-  import SERVICE from '../../services/ApiService'
-  import Util from '../../util'
-  import MyTitle from '../../components/layouts/MyTitle'
-  import AlertNotify from '../../components/layouts/AlertNotify'
-  import InfoReset from '../../components/layouts_reset/InfoReset'
-  import AcceptReset from '../../components/layouts_reset/AcceptReset'
-  import PwdReset from '../../components/layouts_reset/PwdReset'
-  import LoadModal from '../../components/layouts/LoadModal'
-  import FormSearch from '../layouts_search/FormSearch'
-  import ButtonReset from '../layouts_action/ButtonReset'
+  import Storage      from 'vue-local-storage'
+  import SERVICE      from '../../services/ApiService'
+  import Util         from '../../util'
+  import MyTitle      from '../../components/layouts/MyTitle'
+  import AlertNotify  from '../../components/layouts/AlertNotify'
+  import InfoReset    from '../../components/layouts_reset/InfoReset'
+  import AcceptReset  from '../../components/layouts_reset/AcceptReset'
+  import PwdReset     from '../../components/layouts_reset/PwdReset'
+  import LoadModal    from '../../components/layouts/LoadModal'
+  import FormSearch   from '../layouts_search/FormSearch'
+  import ButtonReset  from '../layouts_action/ButtonReset'
   import ButtonUnlock from '../layouts_action/ButtonUnlock'
 
   export default {
@@ -120,12 +122,6 @@
     },
     data: () => ({
       showLoadingModal: false,
-      params: {
-        username: '',
-        password: '',
-        text_search: '',
-        pin: '',
-      },
       data: [],
       dataAlert: {},
       dataReset: {
@@ -136,44 +132,50 @@
       validation: {
         btn_reset: false,
       },
+      params: {
+        username: '',
+        password: '',
+        text_search: '',
+        pin: '',
+      },
     }),
-    created () {
+    created() {
       this.load()
     },
     methods: {
       //Funciones ejecutadas desde su componente
-      cancelInfoReset () {
+      cancelInfoReset() {
         this.dataReset.showInfo = false
         this.dataAlert = {}
       },
-      cancelAcceptReset () {
+      cancelAcceptReset() {
         this.dataReset.showAccept = false
         this.dataReset.showInfo = false
         this.dataAlert = {}
       },
-      cancelResetPwd () {
+      cancelResetPwd() {
         this.dataReset.showInfo = false
         this.dataReset.showAccept = false
         this.dataReset.showResetPwd = false
         this.dataAlert = {}
       },
-      sendReceivedCode () {
+      sendReceivedCode() {
         SERVICE.dispatch('sendReceivedCode', {self: this})
       },
-      acceptReceivedCode () {
+      acceptReceivedCode() {
         SERVICE.dispatch('acceptReceivedCode', {self: this})
       },
       //Funcion que autogenerar contraseña y resetear
-      resetGeneratePwd () {
+      resetGeneratePwd() {
         alert('generate Pwd')
       },
       //Funcion resetear contraseña
-      resetPwd () {
+      resetPwd() {
         this.params.username = this.data.name
         SERVICE.dispatch('reset', {self: this})
       },
       //Funcion para buscar texto
-      search () {
+      search() {
         //Ocultar elementos activos
         this.dataReset.showInfo = false
         this.dataReset.showAccept = false
@@ -181,11 +183,11 @@
         SERVICE.dispatch('researchText', {self: this})
       },
       //Funcion para remover la cache y salir del modulo de autogestion
-      exit () {
+      exit() {
         SERVICE.dispatch('exit', {self: this})
       },
       //Funcion que carga la informacion
-      load () {
+      load() {
         Util.openLoadModal(this)
         this.data = Storage.get('data_user')
         if (Object.keys(this.data).length > 0) {
@@ -193,16 +195,16 @@
         }
       },
       //Funcion que envia por POST el desbloqueo de la cuenta
-      unlock () {
+      unlock() {
         this.params.username = this.data.username
         SERVICE.dispatch('unlock', {self: this})
       },
       //Funcion que muestra la informacion de pasos para resetear una contraseña
-      reset () {
+      reset() {
         SERVICE.dispatch('validateReset', {self: this})
       },
       //Funcion valida si tiene telefono en el AD para tomar una accion
-      validatePhone () {
+      validatePhone() {
         if (Storage.get('data_user').phone_number !== undefined) {
           this.dataAlert = {}
           this.dataReset.showInfo = true
@@ -214,7 +216,7 @@
         }
       },
       //Funcion para cargar imagen
-      getImgUrl (img) {
+      getImgUrl(img) {
         return require('@/assets/vendor/img/' + img)
       },
     },

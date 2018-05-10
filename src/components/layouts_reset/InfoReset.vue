@@ -29,21 +29,21 @@
   export default {
     name: 'info-reset',
     props: {
-      dataReset: {}
+      dataReset: {},
     },
     data: () => ({
       storage: Storage,
     }),
     methods: {
       //Funcion que cancela el envio del codigo de seguridad
-      btnNot () {
+      btnNot() {
         this.$emit('eventCancelInfoReset')
       },
       //funcion que acepta obtener el codigo de seguridad por mensaje
-      btnYes () {
+      btnYes() {
         this.$emit('eventAcceptReceivedCode')
-      }
-    }
+      },
+    },
   }
 </script>
 

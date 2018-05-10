@@ -31,7 +31,7 @@
 <style>
     @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
     @import "../node_modules/font-awesome/css/font-awesome.min.css";
-    @import "assets/vendor/css/sb-admin.css";
+    @import "assets/css/sb-admin.css";
 
     .card-header {
         background-color: #003348 !important;

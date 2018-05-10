@@ -7,7 +7,8 @@
                     <my-title/>
                 </div>
                 <div class="card-body">
-                    <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert" @eventCloseNotify="dataAlert = {}"/>
+                    <alert-notify v-if="Object.keys(dataAlert).length > 0" :data-alert="dataAlert"
+                                  @eventCloseNotify="dataAlert = {}"/>
                     <form-search :params="params" @listenSearch="search()"/>
                 </div>
             </div>
@@ -17,29 +18,29 @@
 </template>
 
 <script>
-  import SERVICE from '../../services/ApiService'
-  import LogoSapia from './../layouts/LogoSapia'
-  import MyTitle from '../../components/layouts/MyTitle'
+  import SERVICE     from '../../services/ApiService'
+  import LogoSapia   from './../layouts/LogoSapia'
+  import MyTitle     from '../../components/layouts/MyTitle'
   import AlertNotify from '../../components/layouts/AlertNotify'
-  import LoadModal from '../../components/layouts/LoadModal'
-  import FormSearch from '../layouts_search/FormSearch'
+  import LoadModal   from '../../components/layouts/LoadModal'
+  import FormSearch  from '../layouts_search/FormSearch'
 
   export default {
     name: 'search',
     components: {FormSearch, AlertNotify, MyTitle, LoadModal, LogoSapia},
     data: () => ({
       msg: undefined,
+      dataAlert: {},
+      showLoadingModal: false,
       params: {
         text_search: '',
       },
-      dataAlert: {},
-      showLoadingModal: false,
     }),
-    created () {
+    created() {
       SERVICE.dispatch('generateTokenLaravel', {self: this})
     },
     methods: {
-      search () {
+      search() {
         SERVICE.dispatch('searchText', {self: this})
       },
     },

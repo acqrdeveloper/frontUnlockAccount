@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="alert alert-secondary">
                 <h5>Paso #2</h5>
-                <span>Ingrese el codigo de 5 digitos que hemos enviado al numero movil <b>{{storage.get("data_user").phone_number}}</b>.</span><a
+                <span>Ingrese el codigo de 5 digitos que hemos enviado al numero movil <b>{{storage.get('data_user').phone_number}}</b>.</span><a
                     title="click para volver a enviar sms a tu numero movil del Active Directory" class="btn btn-link"
                     href @click.prevent="reSend()"><i class="fa fa-link fa-fw"></i>Reenviar sms</a>
                 <ul>
@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-8">
                     <div class="form-group">
-                        <input ref="inputPin" v-model="params.pin" type="text" class="form-control" placeholder="Ingrese su codigo de seguridad de 5 digitos" autofocus maxlength="5" />
+                        <input ref="inputPin" v-model="params.pin" type="text" class="form-control" placeholder="Ingrese su codigo de seguridad de 5 digitos" autofocus maxlength="5"/>
                     </div>
                 </div>
                 <div class="col-2">
@@ -42,28 +42,28 @@
 </template>
 
 <script>
-import Storage from 'vue-local-storage'
+  import Storage from 'vue-local-storage'
 
-export default {
-	name: "accept-reset",
-	props: {
-		dataReset: {},
-		params: {},
-	},
-	data: () => ({
-		storage: Storage,
-	}),
-	methods: {
-		//Funcion que envia por POST el codigo de seguridad
-		btnYesSecutity() {
-			this.$emit('eventSendReceivedCode')
-		},
-		//Funcion que cancela enviar por POST el codigo de seguridad
-		btnNotSecutity() {
-			this.$emit('eventCancelAcceptReset')
-		},
-	}
-}
+  export default {
+    name: 'accept-reset',
+    props: {
+      dataReset: {},
+      params: {},
+    },
+    data: () => ({
+      storage: Storage,
+    }),
+    methods: {
+      //Funcion que envia por POST el codigo de seguridad
+      btnYesSecutity() {
+        this.$emit('eventSendReceivedCode')
+      },
+      //Funcion que cancela enviar por POST el codigo de seguridad
+      btnNotSecutity() {
+        this.$emit('eventCancelAcceptReset')
+      },
+    },
+  }
 
 
 </script>

@@ -6,14 +6,14 @@
 </template>
 
 <script>
-export default {
-	name: "button-reset",
-	methods:{
-		reset(){
-			this.$emit("listenReset")
-		}
-	}
-}
+  export default {
+    name: 'button-reset',
+    methods: {
+      reset() {
+        this.$emit('listenReset')
+      },
+    },
+  }
 </script>
 
 <style scoped>
